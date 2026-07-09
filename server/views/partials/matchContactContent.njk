@@ -116,7 +116,7 @@
                       text: "Employer’s primary address"
                     },
                       value: {
-                      text: employment.employer | addressToLines or 'Not provided'
+                      html: (employment.employer | addressToLines or 'Not provided') | escape | nl2br
                     }
                     },
                     {

@@ -22,7 +22,7 @@
                 attributes: {"data-qa": "success-message"},
                 html: (
                      prisonerNameForPanel +
-                    '<div><strong>Contact: </strong><span data-qa="contact-name">' + journey.names | formatNameFirstNameFirst + '</span></div>'
+                    '<div><strong>Contact: </strong><span data-qa="contact-name">' + journey.names | formatNameFirstNameFirst | escape + '</span></div>'
                 )
             }) }}
             <div>

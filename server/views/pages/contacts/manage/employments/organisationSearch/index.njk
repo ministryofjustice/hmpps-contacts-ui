@@ -68,7 +68,7 @@
                 html: (organisation.organisationName | escape) + '<br/><span class="govuk-hint">' + organisation.organisationId + '</span>'
               },
               {
-                text: organisation | addressToLines or 'Not provided'
+                html: (organisation | addressToLines or 'Not provided') | escape | nl2br
               },
               {
                 text: organisation | formatBusinessPhoneNumber or "Not provided"
