@@ -155,7 +155,7 @@
                     {% for contact in results.content %}
                         {% set contactRows = (contactRows.push([
                             {
-                                html: (contact | formatNameLastNameFirst) + '<br/><span class="govuk-hint">' + contact.id + '</span>'
+                                html: (contact | formatNameLastNameFirst | escape) + '<br/><span class="govuk-hint">' + contact.id + '</span>'
                             },
                             {
                                 html: contact | formatDob

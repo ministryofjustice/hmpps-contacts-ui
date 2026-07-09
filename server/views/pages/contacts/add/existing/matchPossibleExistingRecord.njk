@@ -17,7 +17,7 @@
           variant: "warning",
           title: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to the prisoner',
           dismissible: false,
-          html: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + '. <br/><a href="' + reviewUrl + '" class="govuk-link" data-qa="view-existing-record-link">View existing record' +  ('s' if existingRelationshipSummaries.length > 1) + '</a>'
+          html: (contact | formatNameFirstNameFirst | escape) + ' (' + contact.id + ') is already linked to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) | escape) + '. <br/><a href="' + reviewUrl + '" class="govuk-link" data-qa="view-existing-record-link">View existing record' +  ('s' if existingRelationshipSummaries.length > 1) + '</a>'
         }) }}
       {% endif %}
       <p class="govuk-body">If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner. </p>

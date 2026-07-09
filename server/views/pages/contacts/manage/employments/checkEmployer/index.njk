@@ -50,8 +50,7 @@
             text: "Organisation type"
           },
             value: {
-            html: (organisationTypes or 'Not provided')
-            | escape | nl2br
+            html: (organisationTypes or 'Not provided') | escape | nl2br
           }
           },
           {
@@ -136,7 +135,7 @@
             text: "Email address"
           },
           value: {
-            text: emailAddresses | escape | nl2br
+            html: emailAddresses | escape | nl2br
           }
         }), emailAndWebRows) %}
       {% endif %}
@@ -147,7 +146,7 @@
             text: "Web address"
           },
           value: {
-            text: webAddresses | escape | nl2br
+            html: webAddresses | escape | nl2br
           }
         }), emailAndWebRows) %}
       {% endif %}

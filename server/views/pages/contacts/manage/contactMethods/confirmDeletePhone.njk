@@ -27,7 +27,7 @@
                           text: "Phone number type"
                         },
                           value: {
-                            html: phone.phoneTypeDescription,
+                            html: phone.phoneTypeDescription | escape,
                             classes: 'type-value'
                           }
                         },
@@ -36,7 +36,7 @@
                                 text: "Phone number"
                             },
                             value: {
-                                html: phone.phoneNumber,
+                                html: phone.phoneNumber | escape,
                                 classes: 'phone-number-value'
                             }
                         },
@@ -45,7 +45,7 @@
                                 text: "Extension"
                             },
                             value: {
-                                html: phone.extNumber if phone.extNumber else 'Not provided',
+                                html: phone.extNumber if phone.extNumber else 'Not provided' | escape,
                                 classes: 'extension-value'
                             }
                         }

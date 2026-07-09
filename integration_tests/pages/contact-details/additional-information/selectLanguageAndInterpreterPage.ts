@@ -14,7 +14,12 @@ export default class SelectLanguageAndInterpreterPage extends Page {
   }
 
   selectFirstLanguage(value: string) {
-    cy.findByRole('combobox', { name: `What is ${this.name}’s first language?` }).type(value, { delay: 0 })
+    cy.findByRole('combobox', { name: `What is ${this.name}’s first language?` }).then($el => {
+      cy.wrap($el).clear()
+      cy.wrap($el).type(value, { delay: 0 })
+      cy.wrap($el).type('{enter}')
+    })
+
     return this
   }
 

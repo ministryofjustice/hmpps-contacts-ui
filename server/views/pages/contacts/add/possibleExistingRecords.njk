@@ -35,7 +35,7 @@
           {% set hasExistingRelationships = contact.existingRelationships and contact.existingRelationships.length > 0  %}
           {% set contactRows = (contactRows.push([
             {
-              html: (contact | formatNameLastNameFirst) + '<br/><span class="govuk-hint">' + contact.id + '</span>',
+              html: (contact | formatNameLastNameFirst | escape) + '<br/><span class="govuk-hint">' + contact.id + '</span>',
               classes: 'no-bottom-border' if hasExistingRelationships else ''
             },
             {
@@ -59,7 +59,7 @@
                 variant: "information",
                 title: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to the prisoner',
                 dismissible: false,
-                html: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + '. <br/><a href="' + reviewUrl + '" class="govuk-link" data-qa="possible-existing-relationship-link-' + contact.id + '">View existing record' +  ('s' if contact.existingRelationships.length > 1) + '</a>',
+                html: (contact | formatNameFirstNameFirst | escape) + ' (' + contact.id + ') is already linked to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) | escape) + '. <br/><a href="' + reviewUrl + '" class="govuk-link" data-qa="possible-existing-relationship-link-' + contact.id + '">View existing record' +  ('s' if contact.existingRelationships.length > 1) + '</a>',
                 classes: 'govuk-!-margin-bottom-0'
               }) }}
             {% endset %}
