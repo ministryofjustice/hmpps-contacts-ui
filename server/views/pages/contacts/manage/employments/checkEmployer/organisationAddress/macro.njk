@@ -106,7 +106,7 @@
       text: "Comments on this address"
     },
       value: {
-      text: params.address.comments or 'Not provided'
+      html: (params.address.comments or 'Not provided') | escape | nl2br
     }
     }
   ), rows) %}
