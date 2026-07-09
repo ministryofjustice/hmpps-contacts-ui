@@ -19,8 +19,7 @@ export const formatPhoneNumber = ({
   phoneNumber,
   extNumber,
 }: ContactPhoneDetails | ContactAddressPhoneDetails | OrganisationPhoneDetails | OrganisationAddressPhoneDetails):
-  | string
-  | null => {
+  string | null => {
   return phoneToString(phoneNumber, extNumber)
 }
 
