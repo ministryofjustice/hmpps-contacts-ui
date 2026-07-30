@@ -37,15 +37,15 @@
     "@aws-sdk/client-sqs": "3.1091.0",
     "@ministryofjustice/frontend": "9.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^3.0.0",
+    "@ministryofjustice/hmpps-azure-telemetry": "1.0.2",
     "@ministryofjustice/hmpps-connect-dps-components": "^6.3.0",
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
-    "@ministryofjustice/hmpps-prison-permissions-lib": "^3.1.0",
+    "@ministryofjustice/hmpps-prison-permissions-lib": "4.2.0",
     "@ministryofjustice/hmpps-rest-client": "^2.2.0",
     "@sentry/node": "^10.68.0",
     "@smithy/node-http-handler": "4.9.13",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
-    "applicationinsights": "^2.9.8",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
     "compression": "^1.8.1",
@@ -116,7 +116,9 @@
     "typescript": "^6.0.3"
   },
   "overrides": {
+    "@opentelemetry/api": "1.9.0",
     "@opentelemetry/core": "2.10.0",
+    "@opentelemetry/resources": "2.10.0",
     "brace-expansion": "5.0.8",
     "mocha": {
       "diff": "^8.0.4",

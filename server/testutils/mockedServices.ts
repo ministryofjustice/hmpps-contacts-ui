@@ -52,7 +52,7 @@ export const MockedService = {
   },
   OrganisationsService: () =>
     new OrganisationsService({} as OrganisationsApiClient) as jest.Mocked<OrganisationsService>,
-  TelemetryService: () => new TelemetryService(null) as jest.Mocked<TelemetryService>,
+  TelemetryService: () => new TelemetryService() as jest.Mocked<TelemetryService>,
   AlertsService: (): jest.Mocked<AlertsService> => {
     const service = new AlertsService({} as AlertsApiClient, {} as AuditService) as jest.Mocked<AlertsService>
 
