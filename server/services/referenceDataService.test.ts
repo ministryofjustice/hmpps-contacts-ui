@@ -12,7 +12,7 @@ describe('referenceDataService', () => {
   let apiClient: jest.Mocked<ContactsApiClient>
   let service: ReferenceDataService
   beforeEach(() => {
-    apiClient = new ContactsApiClient() as jest.Mocked<ContactsApiClient>
+    apiClient = new ContactsApiClient(undefined as never) as jest.Mocked<ContactsApiClient>
     service = new ReferenceDataService(apiClient)
   })
 

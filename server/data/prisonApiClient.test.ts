@@ -1,7 +1,8 @@
 import { Readable } from 'stream'
-import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
+import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import PrisonApiClient from './prisonApiClient'
-import RestClient from './restClient'
+import AuthenticationClient from './authenticationClient'
+import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -9,10 +10,10 @@ const user = { token: 'userToken', username: 'user1' } as Express.User
 
 describe('Prison api client tests', () => {
   let prisonApiClient: PrisonApiClient
-  const prisonerThumbnail = jest.spyOn(RestClient.prototype, 'prisonerThumbnail')
+  const stream = jest.spyOn(RestClient.prototype, 'stream')
 
   beforeEach(() => {
-    prisonApiClient = new PrisonApiClient()
+    prisonApiClient = new PrisonApiClient(new AuthenticationClient())
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 
@@ -21,9 +22,18 @@ describe('Prison api client tests', () => {
   })
 
   it('Get prisoner image', async () => {
-    prisonerThumbnail.mockResolvedValue(Readable.from('image'))
+    stream.mockResolvedValue(Readable.from('image'))
     const result = await prisonApiClient.getImage('ABC1234', user)
-    expect(prisonerThumbnail).toHaveBeenCalledWith({ path: '/api/bookings/offenderNo/ABC1234/image/data' }, user)
+    expect(stream).toHaveBeenCalledWith(
+      { path: '/api/bookings/offenderNo/ABC1234/image/data' },
+      { tokenType: 'SYSTEM_TOKEN', user: { username: 'user1' } },
+    )
     expect(result.read()).toEqual('image')
+  })
+
+  it('Falls back to a placeholder image when the prisoner has no image', async () => {
+    stream.mockRejectedValue({ responseStatus: 404 })
+    const result = await prisonApiClient.getImage('ABC1234', user)
+    expect(result).toBeDefined()
   })
 })

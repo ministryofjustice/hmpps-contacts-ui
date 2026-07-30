@@ -35,7 +35,7 @@ describe('restrictionsService', () => {
   }
 
   beforeEach(() => {
-    apiClient = new ContactsApiClient() as jest.Mocked<ContactsApiClient>
+    apiClient = new ContactsApiClient(undefined as never) as jest.Mocked<ContactsApiClient>
     service = new RestrictionsService(apiClient, auditService)
   })
 
@@ -98,7 +98,9 @@ describe('restrictionsService', () => {
     })
 
     it('should handle a bad request creating global restriction', async () => {
-      apiClient.createContactGlobalRestriction.mockRejectedValue(createError.BadRequest())
+      apiClient.createContactGlobalRestriction.mockRejectedValue(
+        Object.assign(createError.BadRequest(), { responseStatus: 400 }),
+      )
       journey.restrictionClass = 'CONTACT_GLOBAL'
       journey.restriction = { type: 'BAN', startDate: '1/2/2009' }
       await expect(service.createRestriction(journey, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
@@ -184,7 +186,9 @@ describe('restrictionsService', () => {
     })
 
     it('should handle a bad request creating prisoner-contact restriction', async () => {
-      apiClient.createPrisonerContactRestriction.mockRejectedValue(createError.BadRequest())
+      apiClient.createPrisonerContactRestriction.mockRejectedValue(
+        Object.assign(createError.BadRequest(), { responseStatus: 400 }),
+      )
       journey.restrictionClass = 'PRISONER_CONTACT'
       journey.restriction = { type: 'BAN', startDate: '1/2/2009' }
       await expect(service.createRestriction(journey, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
@@ -313,7 +317,9 @@ describe('restrictionsService', () => {
         comments: undefined,
       }
 
-      apiClient.updateContactGlobalRestriction.mockRejectedValue(createError.BadRequest())
+      apiClient.updateContactGlobalRestriction.mockRejectedValue(
+        Object.assign(createError.BadRequest(), { responseStatus: 400 }),
+      )
       await expect(
         service.updateContactGlobalRestriction(contactId, restrictionId, form, user, 'correlationId'),
       ).rejects.toBeInstanceOf(BadRequest)
@@ -445,7 +451,9 @@ describe('restrictionsService', () => {
         comments: undefined,
       }
 
-      apiClient.updatePrisonerContactRestriction.mockRejectedValue(createError.BadRequest())
+      apiClient.updatePrisonerContactRestriction.mockRejectedValue(
+        Object.assign(createError.BadRequest(), { responseStatus: 400 }),
+      )
       await expect(
         service.updatePrisonerContactRestriction(contactId, restrictionId, form, user, 'correlationId'),
       ).rejects.toBeInstanceOf(BadRequest)

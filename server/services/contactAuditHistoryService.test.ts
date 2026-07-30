@@ -11,7 +11,7 @@ describe('ContactAuditHistoryService', () => {
   let service: ContactAuditHistoryService
 
   beforeEach(() => {
-    apiClient = new ContactsApiClient() as jest.Mocked<ContactsApiClient>
+    apiClient = new ContactsApiClient(undefined as never) as jest.Mocked<ContactsApiClient>
     service = new ContactAuditHistoryService(apiClient)
   })
 

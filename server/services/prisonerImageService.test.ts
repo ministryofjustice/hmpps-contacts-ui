@@ -11,7 +11,7 @@ describe('Prisoner image service', () => {
   let prisonerImageService: PrisonerImageService
 
   beforeEach(() => {
-    prisonApiClient = new PrisonApiClient() as jest.Mocked<PrisonApiClient>
+    prisonApiClient = new PrisonApiClient(undefined as never) as jest.Mocked<PrisonApiClient>
     prisonerImageService = new PrisonerImageService(prisonApiClient)
   })
 

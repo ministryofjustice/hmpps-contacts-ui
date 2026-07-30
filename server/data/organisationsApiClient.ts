@@ -1,5 +1,6 @@
+import { RestClient, asSystem, type AuthenticationClient } from '@ministryofjustice/hmpps-rest-client'
 import config from '../config'
-import RestClient from './restClient'
+import logger from '../../logger'
 import {
   OrganisationDetails,
   OrganisationSummary,
@@ -7,8 +8,8 @@ import {
 } from '../@types/organisationsApiClient'
 
 export default class OrganisationsApiClient extends RestClient {
-  constructor() {
-    super('Organisations API client', config.apis.organisationsApi)
+  constructor(authenticationClient: AuthenticationClient) {
+    super('Organisations API client', config.apis.organisationsApi, logger, authenticationClient)
   }
 
   async searchOrganisations(
@@ -30,15 +31,15 @@ export default class OrganisationsApiClient extends RestClient {
       {
         path: `/organisation/search?name=${name}&page=${page}&size=${size}${sort.map(itm => `&sort=${encodeURIComponent(itm)}`).join('')}`,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
   async getOrganisation(organisationId: number, user: Express.User): Promise<OrganisationDetails> {
-    return this.get<OrganisationDetails>({ path: `/organisation/${organisationId}` }, user)
+    return this.get<OrganisationDetails>({ path: `/organisation/${organisationId}` }, asSystem(user.username))
   }
 
   async getOrganisationSummary(organisationId: number, user: Express.User): Promise<OrganisationSummary> {
-    return this.get<OrganisationSummary>({ path: `/organisation/${organisationId}/summary` }, user)
+    return this.get<OrganisationSummary>({ path: `/organisation/${organisationId}/summary` }, asSystem(user.username))
   }
 }

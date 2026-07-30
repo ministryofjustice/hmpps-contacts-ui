@@ -48,7 +48,7 @@ describe('contactsService', () => {
   let apiClient: jest.Mocked<ContactsApiClient>
   let service: ContactsService
   beforeEach(() => {
-    apiClient = new ContactsApiClient() as jest.Mocked<ContactsApiClient>
+    apiClient = new ContactsApiClient(undefined as never) as jest.Mocked<ContactsApiClient>
     service = new ContactsService(apiClient, auditService, telemetryService)
   })
 
@@ -343,7 +343,7 @@ describe('contactsService', () => {
     })
 
     it('should handle a bad request', async () => {
-      apiClient.createContact.mockRejectedValue(createError.BadRequest())
+      apiClient.createContact.mockRejectedValue(Object.assign(createError.BadRequest(), { responseStatus: 400 }))
       await expect(
         service.createContact(
           {
@@ -577,7 +577,9 @@ describe('contactsService', () => {
     })
 
     it('should handle a bad request', async () => {
-      apiClient.addContactRelationship.mockRejectedValue(createError.BadRequest())
+      apiClient.addContactRelationship.mockRejectedValue(
+        Object.assign(createError.BadRequest(), { responseStatus: 400 }),
+      )
       await expect(
         service.addContact(
           {
@@ -659,7 +661,7 @@ describe('contactsService', () => {
     })
 
     it('should handle a bad request', async () => {
-      apiClient.updateContactPhone.mockRejectedValue(createError.BadRequest())
+      apiClient.updateContactPhone.mockRejectedValue(Object.assign(createError.BadRequest(), { responseStatus: 400 }))
       await expect(
         service.updateContactPhone(99, 77, user, 'correlationId', 'MOB', '0123456789', undefined),
       ).rejects.toBeInstanceOf(BadRequest)
@@ -697,7 +699,7 @@ describe('contactsService', () => {
     })
 
     it('Propagates errors', async () => {
-      apiClient.updateContactById.mockRejectedValue(createError.BadRequest())
+      apiClient.updateContactById.mockRejectedValue(Object.assign(createError.BadRequest(), { responseStatus: 400 }))
       await expect(service.updateContactById(23, request, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'FAILURE_API_PATCH_CONTACT',
@@ -777,7 +779,7 @@ describe('contactsService', () => {
     })
 
     it('should handle a bad request', async () => {
-      apiClient.createContactEmails.mockRejectedValue(createError.BadRequest())
+      apiClient.createContactEmails.mockRejectedValue(Object.assign(createError.BadRequest(), { responseStatus: 400 }))
       await expect(service.createContactEmails(99, expectedRequest, user, 'correlationId')).rejects.toBeInstanceOf(
         BadRequest,
       )
@@ -827,7 +829,7 @@ describe('contactsService', () => {
     })
 
     it('should handle a bad request', async () => {
-      apiClient.updateContactEmail.mockRejectedValue(createError.BadRequest())
+      apiClient.updateContactEmail.mockRejectedValue(Object.assign(createError.BadRequest(), { responseStatus: 400 }))
       await expect(service.updateContactEmail(99, 1, request, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'FAILURE_API_PUT_CONTACT_EMAIL',
@@ -982,7 +984,7 @@ describe('contactsService', () => {
     })
 
     it('should handle a bad request', async () => {
-      apiClient.createContactAddress.mockRejectedValue(createError.BadRequest())
+      apiClient.createContactAddress.mockRejectedValue(Object.assign(createError.BadRequest(), { responseStatus: 400 }))
       await expect(
         service.createContactAddress(
           {
@@ -1101,7 +1103,7 @@ describe('contactsService', () => {
     })
 
     it('should handle a bad request', async () => {
-      apiClient.updateContactAddress.mockRejectedValue(createError.BadRequest())
+      apiClient.updateContactAddress.mockRejectedValue(Object.assign(createError.BadRequest(), { responseStatus: 400 }))
       await expect(
         service.updateContactAddress(
           {
@@ -1200,7 +1202,9 @@ describe('contactsService', () => {
     })
 
     it('should handle a bad request', async () => {
-      apiClient.updateContactAddressPhone.mockRejectedValue(createError.BadRequest())
+      apiClient.updateContactAddressPhone.mockRejectedValue(
+        Object.assign(createError.BadRequest(), { responseStatus: 400 }),
+      )
       await expect(
         service.updateContactAddressPhone(99, 321, 77, user, 'correlationId', 'MOB', '0123456789', undefined),
       ).rejects.toBeInstanceOf(BadRequest)

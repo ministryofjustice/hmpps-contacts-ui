@@ -1,13 +1,14 @@
-import RestClient from './restClient'
+import { RestClient, asSystem, type AuthenticationClient } from '@ministryofjustice/hmpps-rest-client'
 import { Prisoner } from './prisonerOffenderSearchTypes'
-import config, { ApiConfig } from '../config'
+import config from '../config'
+import logger from '../../logger'
 
 export default class PrisonerSearchApiClient extends RestClient {
-  constructor() {
-    super('prisonerSearchApiClient', config.apis.prisonerSearchApi as ApiConfig)
+  constructor(authenticationClient: AuthenticationClient) {
+    super('prisonerSearchApiClient', config.apis.prisonerSearchApi, logger, authenticationClient)
   }
 
   async getByPrisonerNumber(prisonerNumber: string, user: Express.User): Promise<Prisoner> {
-    return this.get({ path: `/prisoner/${prisonerNumber}` }, user)
+    return this.get({ path: `/prisoner/${prisonerNumber}` }, asSystem(user.username))
   }
 }

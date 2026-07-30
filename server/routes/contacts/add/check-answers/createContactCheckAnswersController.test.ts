@@ -543,7 +543,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
 
   it('should redirect to handle-duplicate if we fail with 409', async () => {
     // Given
-    contactsService.addContact.mockRejectedValue(createError.Conflict())
+    contactsService.addContact.mockRejectedValue(Object.assign(createError.Conflict(), { responseStatus: 409 }))
     journey.mode = 'EXISTING'
     journey.contactId = 123456
 
@@ -561,7 +561,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
 
   it('should pass on other errors that are not 409', async () => {
     // Given
-    contactsService.addContact.mockRejectedValue(createError.InternalServerError())
+    contactsService.addContact.mockRejectedValue(
+      Object.assign(createError.InternalServerError(), { responseStatus: 500 }),
+    )
     journey.mode = 'EXISTING'
     journey.contactId = 123456
 

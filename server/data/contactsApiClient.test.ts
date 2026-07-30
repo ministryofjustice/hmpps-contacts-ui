@@ -2,6 +2,7 @@ import nock from 'nock'
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import ContactsApiClient from './contactsApiClient'
+import AuthenticationClient from './authenticationClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import TestData from '../routes/testutils/testData'
 import {
@@ -37,7 +38,7 @@ describe('contactsApiClient', () => {
 
   beforeEach(() => {
     fakeContactsApi = nock(config.apis.contactsApi.url)
-    contactsApiClient = new ContactsApiClient()
+    contactsApiClient = new ContactsApiClient(new AuthenticationClient())
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 
@@ -111,9 +112,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.createContact(request, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
@@ -180,9 +181,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.addContactRelationship(request, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
@@ -235,9 +236,9 @@ describe('contactsApiClient', () => {
         try {
           await contactsApiClient.getReferenceCodes(ReferenceCodeType.TITLE, user)
         } catch (error) {
-          const e = error as { status: unknown; data: unknown }
+          const e = error as { responseStatus: unknown; data: unknown }
           // Then
-          expect(e.status).toEqual(errorCode)
+          expect(e.responseStatus).toEqual(errorCode)
           expect(e.data).toEqual(expectedErrorBody)
         }
       })
@@ -327,9 +328,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.getContact(123456, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
@@ -375,9 +376,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.getPrisonerContactRelationship(123456, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
@@ -433,9 +434,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.updateContactPhone(99, 77, request, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
@@ -468,9 +469,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.deleteContactPhone(99, 77, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
@@ -554,9 +555,9 @@ describe('contactsApiClient', () => {
         try {
           await contactsApiClient.createContactIdentity(99, request, user)
         } catch (error) {
-          const e = error as { status: unknown; data: unknown }
+          const e = error as { responseStatus: unknown; data: unknown }
           // Then
-          expect(e.status).toEqual(errorCode)
+          expect(e.responseStatus).toEqual(errorCode)
           expect(e.data).toEqual(expectedErrorBody)
         }
       })
@@ -614,9 +615,9 @@ describe('contactsApiClient', () => {
         try {
           await contactsApiClient.updateContactIdentity(99, 77, request, user)
         } catch (error) {
-          const e = error as { status: unknown; data: unknown }
+          const e = error as { responseStatus: unknown; data: unknown }
           // Then
-          expect(e.status).toEqual(errorCode)
+          expect(e.responseStatus).toEqual(errorCode)
           expect(e.data).toEqual(expectedErrorBody)
         }
       })
@@ -649,9 +650,9 @@ describe('contactsApiClient', () => {
         try {
           await contactsApiClient.deleteContactIdentity(99, 77, user)
         } catch (error) {
-          const e = error as { status: unknown; data: unknown }
+          const e = error as { responseStatus: unknown; data: unknown }
           // Then
-          expect(e.status).toEqual(errorCode)
+          expect(e.responseStatus).toEqual(errorCode)
           expect(e.data).toEqual(expectedErrorBody)
         }
       })
@@ -708,9 +709,9 @@ describe('contactsApiClient', () => {
         try {
           await contactsApiClient.createContactEmails(99, request, user)
         } catch (error) {
-          const e = error as { status: unknown; data: unknown }
+          const e = error as { responseStatus: unknown; data: unknown }
           // Then
-          expect(e.status).toEqual(errorCode)
+          expect(e.responseStatus).toEqual(errorCode)
           expect(e.data).toEqual(expectedErrorBody)
         }
       })
@@ -765,9 +766,9 @@ describe('contactsApiClient', () => {
         try {
           await contactsApiClient.updateContactEmail(99, 1, request, user)
         } catch (error) {
-          const e = error as { status: unknown; data: unknown }
+          const e = error as { responseStatus: unknown; data: unknown }
           // Then
-          expect(e.status).toEqual(errorCode)
+          expect(e.responseStatus).toEqual(errorCode)
           expect(e.data).toEqual(expectedErrorBody)
         }
       })
@@ -801,9 +802,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.deleteContactEmail(99, 77, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
@@ -853,9 +854,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.createContactGlobalRestriction(99, request, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
@@ -908,9 +909,9 @@ describe('contactsApiClient', () => {
         try {
           await contactsApiClient.createPrisonerContactRestriction(99, request, user)
         } catch (error) {
-          const e = error as { status: unknown; data: unknown }
+          const e = error as { responseStatus: unknown; data: unknown }
           // Then
-          expect(e.status).toEqual(errorCode)
+          expect(e.responseStatus).toEqual(errorCode)
           expect(e.data).toEqual(expectedErrorBody)
         }
       },
@@ -961,9 +962,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.updateContactGlobalRestriction(99, 123456, request, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
@@ -1016,9 +1017,9 @@ describe('contactsApiClient', () => {
         try {
           await contactsApiClient.updatePrisonerContactRestriction(99, 123456, request, user)
         } catch (error) {
-          const e = error as { status: unknown; data: unknown }
+          const e = error as { responseStatus: unknown; data: unknown }
           // Then
-          expect(e.status).toEqual(errorCode)
+          expect(e.responseStatus).toEqual(errorCode)
           expect(e.data).toEqual(expectedErrorBody)
         }
       },
@@ -1074,9 +1075,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.createContactAddress(99, request, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
@@ -1129,9 +1130,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.updateContactAddress(99, 123456, request, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
@@ -1189,9 +1190,9 @@ describe('contactsApiClient', () => {
         try {
           await contactsApiClient.updateContactAddressPhone(99, 123456, 77, request, user)
         } catch (error) {
-          const e = error as { status: unknown; data: unknown }
+          const e = error as { responseStatus: unknown; data: unknown }
           // Then
-          expect(e.status).toEqual(errorCode)
+          expect(e.responseStatus).toEqual(errorCode)
           expect(e.data).toEqual(expectedErrorBody)
         }
       },
@@ -1228,9 +1229,9 @@ describe('contactsApiClient', () => {
       try {
         await contactsApiClient.deleteContactAddressPhone(99, 123456, 77, user)
       } catch (error) {
-        const e = error as { status: unknown; data: unknown }
+        const e = error as { responseStatus: unknown; data: unknown }
         // Then
-        expect(e.status).toEqual(errorCode)
+        expect(e.responseStatus).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
     })

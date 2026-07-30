@@ -1,5 +1,6 @@
 import { SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs'
 import logger from '../../logger'
+import { createProxyRequestHandler } from './helpers/proxySupport'
 
 export interface AuditEvent {
   what: string
@@ -41,7 +42,10 @@ export default class HmppsAuditClient {
     this.enabled = config.enabled
     this.queueUrl = config.queueUrl
     this.serviceName = config.serviceName
-    this.sqsClient = new SQSClient({ region: config.region })
+    this.sqsClient = new SQSClient({
+      region: config.region,
+      ...createProxyRequestHandler(),
+    })
   }
 
   async sendMessage(event: AuditEvent, throwOnError: boolean = true) {

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
@@ -11,7 +12,6 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSucces
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ContactDetails, ContactIdentityDetails } from '../../../../../@types/contactsApiClient'
 import Permission from '../../../../../enumeration/permission'
-import { SanitisedError } from '../../../../../sanitisedError'
 
 export default class ManageContactEditIdentityController implements PageHandler {
   constructor(
@@ -87,7 +87,7 @@ export default class ManageContactEditIdentityController implements PageHandler 
       return res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
     } catch (error) {
       // Catch duplicate identity document error
-      if ((error as SanitisedError)?.status === 409) {
+      if ((error as SanitisedError)?.responseStatus === 409) {
         req.flash('formResponses', JSON.stringify(req.body))
         req.flash(
           'validationErrors',

@@ -19,6 +19,7 @@ export const services = () => {
   const {
     applicationInfo,
     hmppsAuditClient,
+    hmppsAuthClient,
     prisonerSearchApiClient,
     contactsApiClient,
     prisonApiClient,
@@ -40,7 +41,7 @@ export const services = () => {
   const contactAuditHistoryService = new ContactAuditHistoryService(contactsApiClient)
   const permissionsService = PrisonPermissionsService.create({
     prisonerSearchConfig: config.apis.prisonerSearchApi,
-    authenticationClient: new AuthenticationClient(config.apis.hmppsAuth, logger, contactsApiClient.tokenStore),
+    authenticationClient: new AuthenticationClient(config.apis.hmppsAuth, logger, hmppsAuthClient.tokenStore),
     logger,
     ...(applicationInsightsClient && { telemetryClient: applicationInsightsClient }),
   })

@@ -3,6 +3,7 @@ import nock from 'nock'
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
+import AuthenticationClient from './authenticationClient'
 import TestData from '../routes/testutils/testData'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
@@ -15,7 +16,7 @@ describe('Prisoner search', () => {
 
   beforeEach(() => {
     fakePrisonerSearchApi = nock(config.apis.prisonerSearchApi.url)
-    prisonerSearchApiClient = new PrisonerSearchApiClient()
+    prisonerSearchApiClient = new PrisonerSearchApiClient(new AuthenticationClient())
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 

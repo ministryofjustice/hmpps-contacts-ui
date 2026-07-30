@@ -263,7 +263,9 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     // Given
     existingJourney.relationshipType = 'O'
     contactsService.getContactName.mockResolvedValue(contact)
-    contactsService.updateContactRelationshipById.mockRejectedValue(createError.Conflict())
+    contactsService.updateContactRelationshipById.mockRejectedValue(
+      Object.assign(createError.Conflict(), { responseStatus: 409 }),
+    )
 
     // When
     await request(app)
@@ -296,7 +298,9 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     // Given
     existingJourney.relationshipType = 'O'
     contactsService.getContactName.mockResolvedValue(contact)
-    contactsService.updateContactRelationshipById.mockRejectedValue(createError.InternalServerError())
+    contactsService.updateContactRelationshipById.mockRejectedValue(
+      Object.assign(createError.InternalServerError(), { responseStatus: 500 }),
+    )
 
     // When
     await request(app)

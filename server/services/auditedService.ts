@@ -1,6 +1,6 @@
+import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import AuditService from './auditService'
 import { AuditEvent } from '../data/hmppsAuditClient'
-import { SanitisedError } from '../sanitisedError'
 
 export default class AuditedService {
   constructor(protected readonly auditService: AuditService) {}
@@ -16,7 +16,7 @@ export default class AuditedService {
         what: `FAILURE_${event.what}`,
         details: {
           ...(event.details ?? {}),
-          statusCode: (ex as SanitisedError).status,
+          statusCode: (ex as SanitisedError).responseStatus,
         },
       })
       throw ex

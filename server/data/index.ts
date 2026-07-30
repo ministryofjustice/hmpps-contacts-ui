@@ -17,16 +17,23 @@ import ContactsApiClient from './contactsApiClient'
 import PrisonApiClient from './prisonApiClient'
 import OrganisationsApiClient from './organisationsApiClient'
 import AlertsApiClient from './alertsApiClient'
+// Phase 1 proxy-aware adapter — replaced by @ministryofjustice/hmpps-auth-clients in Phase 2
+import AuthenticationClient from './authenticationClient'
 
-export const dataAccess = () => ({
-  applicationInfo,
-  hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
-  prisonerSearchApiClient: new PrisonerSearchApiClient(),
-  contactsApiClient: new ContactsApiClient(),
-  alertsApiClient: new AlertsApiClient(),
-  prisonApiClient: new PrisonApiClient(),
-  organisationsApiClient: new OrganisationsApiClient(),
-  applicationInsightsClient,
-})
+export const dataAccess = () => {
+  const hmppsAuthClient = new AuthenticationClient()
+
+  return {
+    applicationInfo,
+    hmppsAuthClient,
+    hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
+    prisonerSearchApiClient: new PrisonerSearchApiClient(hmppsAuthClient),
+    contactsApiClient: new ContactsApiClient(hmppsAuthClient),
+    alertsApiClient: new AlertsApiClient(hmppsAuthClient),
+    prisonApiClient: new PrisonApiClient(hmppsAuthClient),
+    organisationsApiClient: new OrganisationsApiClient(hmppsAuthClient),
+    applicationInsightsClient,
+  }
+}
 
 export { HmppsAuditClient, PrisonerSearchApiClient, ContactsApiClient, PrisonApiClient, OrganisationsApiClient }

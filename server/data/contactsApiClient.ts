@@ -1,5 +1,5 @@
+import { RestClient, asSystem, type AuthenticationClient } from '@ministryofjustice/hmpps-rest-client'
 import config from '../config'
-import RestClient from './restClient'
 import logger from '../../logger'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import {
@@ -54,8 +54,8 @@ export type Pagination = {
 }
 
 export default class ContactsApiClient extends RestClient {
-  constructor() {
-    super('Contacts API client', config.apis.contactsApi)
+  constructor(authenticationClient: AuthenticationClient) {
+    super('Contacts API client', config.apis.contactsApi, logger, authenticationClient)
   }
 
   async createContact(request: CreateContactRequest, user: Express.User): Promise<ContactCreationResult> {
@@ -64,7 +64,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -77,7 +77,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/prisoner-contact`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -93,7 +93,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/prisoner/${prisonerNumber}/contact`,
         query: { ...paginationParameters, ...filter },
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -106,7 +106,7 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/prisoner/${prisonerNumber}/contact/${contactId}`,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -115,7 +115,7 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/reference-codes/group/${type}`,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -143,27 +143,30 @@ export default class ContactsApiClient extends RestClient {
           ...paginationParameters,
         },
       },
-      user,
+      asSystem(user.username),
     )
   }
 
   async getContact(contactId: number, user: Express.User): Promise<ContactDetails> {
-    return this.get<ContactDetails>({ path: `/contact/${contactId}` }, user)
+    return this.get<ContactDetails>({ path: `/contact/${contactId}` }, asSystem(user.username))
   }
 
   async getContactHistory(contactId: number, user: Express.User): Promise<ContactAuditEntry[]> {
-    return this.get<ContactAuditEntry[]>({ path: `/contact/${contactId}/history` }, user)
+    return this.get<ContactAuditEntry[]>({ path: `/contact/${contactId}/history` }, asSystem(user.username))
   }
 
   async getContactName(contactId: number, user: Express.User): Promise<ContactNameDetails> {
-    return this.get<ContactNameDetails>({ path: `/contact/${contactId}/name` }, user)
+    return this.get<ContactNameDetails>({ path: `/contact/${contactId}/name` }, asSystem(user.username))
   }
 
   async getPrisonerContactRelationship(
     prisonerContactId: number,
     user: Express.User,
   ): Promise<PrisonerContactRelationshipDetails> {
-    return this.get<PrisonerContactRelationshipDetails>({ path: `/prisoner-contact/${prisonerContactId}` }, user)
+    return this.get<PrisonerContactRelationshipDetails>(
+      { path: `/prisoner-contact/${prisonerContactId}` },
+      asSystem(user.username),
+    )
   }
 
   async createContactPhones(
@@ -176,7 +179,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/phones`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -191,7 +194,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/phone/${contactPhoneId}`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -200,7 +203,7 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/contact/${contactId}/phone/${contactPhoneId}`,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -214,7 +217,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/identity`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -229,7 +232,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/identity/${contactIdentityId}`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -238,7 +241,7 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/contact/${contactId}/identity/${contactIdentityId}`,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -252,7 +255,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -266,7 +269,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/prisoner-contact/${prisonerContactId}`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -280,7 +283,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/emails`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -295,7 +298,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/email/${contactEmailId}`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -304,7 +307,7 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/contact/${contactId}/email/${contactEmailId}`,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -318,7 +321,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/restriction`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -333,7 +336,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/restriction/${contactRestrictionId}`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -347,7 +350,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/prisoner-contact/${prisonerContactId}/restriction`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -362,12 +365,12 @@ export default class ContactsApiClient extends RestClient {
         path: `/prisoner-contact/${prisonerContactId}/restriction/${prisonerContactRestrictionId}`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
   async getGlobalContactRestrictions(contactId: number, user: Express.User): Promise<ContactRestrictionDetails[]> {
-    return this.get<ContactRestrictionDetails[]>({ path: `/contact/${contactId}/restriction` }, user)
+    return this.get<ContactRestrictionDetails[]>({ path: `/contact/${contactId}/restriction` }, asSystem(user.username))
   }
 
   async getPrisonerContactRestrictions(
@@ -376,7 +379,7 @@ export default class ContactsApiClient extends RestClient {
   ): Promise<PrisonerContactRestrictionsResponse> {
     return this.get<PrisonerContactRestrictionsResponse>(
       { path: `/prisoner-contact/${prisonerContactId}/restriction` },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -390,7 +393,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/address`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -405,7 +408,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/address/${contactAddressId}`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -420,7 +423,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/address/${contactAddressId}/phones`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -436,7 +439,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/address/${contactAddressId}/phone/${contactAddressPhoneId}`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -450,7 +453,7 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/contact/${contactId}/address/${contactAddressId}/phone/${contactAddressPhoneId}`,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -464,7 +467,7 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/contact/${contactId}/linked-prisoners?page=${page}&size=${size}`,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -480,7 +483,7 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/prisoner-restrictions/${prisonerNumber}?page=${page}&size=${size}&currentTerm=${currentTerm}&paged=${paged}`,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -490,7 +493,7 @@ export default class ContactsApiClient extends RestClient {
         path: `/contact/${contactId}/employment`,
         data: request,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -499,7 +502,7 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/prisoner-contact/${prisonerContactId}`,
       },
-      user,
+      asSystem(user.username),
     )
   }
 
@@ -508,7 +511,7 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/prisoner-contact/${prisonerContactId}/plan-delete`,
       },
-      user,
+      asSystem(user.username),
     )
   }
 }

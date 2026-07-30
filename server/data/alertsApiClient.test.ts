@@ -1,6 +1,7 @@
 import nock from 'nock'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import AlertsApiClient from './alertsApiClient'
+import AuthenticationClient from './authenticationClient'
 import config from '../config'
 import pagedPrisonerAlertsData from '../testutils/testPrisonerAlertsData'
 
@@ -14,7 +15,7 @@ describe('Alerts api client tests', () => {
 
   beforeEach(() => {
     fakeAlertsApi = nock(config.apis.alertsApi.url)
-    alertsApiClient = new AlertsApiClient()
+    alertsApiClient = new AlertsApiClient(new AuthenticationClient())
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 
