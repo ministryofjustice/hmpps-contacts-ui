@@ -1,8 +1,11 @@
+import { Agent as HttpAgent } from 'node:http'
+import { Agent as HttpsAgent } from 'node:https'
 import {
   defaultClient,
   DistributedTracingModes,
   getCorrelationContext,
   setup,
+  start,
   TelemetryClient,
   Contracts,
 } from 'applicationinsights'
@@ -10,12 +13,42 @@ import { Request, RequestHandler } from 'express'
 import { EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
 import type { ApplicationInfo } from '../applicationInfo'
 
+const hasProxyConfigured = () =>
+  [
+    process.env.HTTP_PROXY,
+    process.env.HTTPS_PROXY,
+    process.env.NO_PROXY,
+    process.env.http_proxy,
+    process.env.https_proxy,
+    process.env.no_proxy,
+  ].some(value => value !== undefined)
+
+/**
+ * App Insights' own proxy handling mishandles HTTPS requests through an Envoy forward proxy on
+ * Node 24 (see https://github.com/ministryofjustice/hmpps-prisoner-pay-ui/pull/101) — it rewrites
+ * requests incorrectly rather than tunnelling them, which Envoy rejects. Forcing the SDK onto
+ * Node's own core, proxy-aware agents (activated by NODE_USE_ENV_PROXY, same as
+ * @ministryofjustice/hmpps-rest-client) instead of its bespoke proxyUrl path avoids this.
+ */
+function configureProxyAgents(): void {
+  if (!hasProxyConfigured()) {
+    return
+  }
+
+  defaultClient.config.proxyHttpUrl = ''
+  defaultClient.config.proxyHttpsUrl = ''
+  defaultClient.config.httpAgent = new HttpAgent({ keepAlive: true, proxyEnv: process.env })
+  defaultClient.config.httpsAgent = new HttpsAgent({ keepAlive: true, proxyEnv: process.env })
+}
+
 export function initialiseAppInsights(): void {
   if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     // eslint-disable-next-line no-console
     console.log('Enabling azure application insights')
 
-    setup().setDistributedTracingMode(DistributedTracingModes.AI_AND_W3C).start()
+    setup().setDistributedTracingMode(DistributedTracingModes.AI_AND_W3C)
+    configureProxyAgents()
+    start()
   }
 }
 
