@@ -1,5 +1,4 @@
 import { PermissionsService as PrisonPermissionsService } from '@ministryofjustice/hmpps-prison-permissions-lib'
-import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import { dataAccess } from '../data'
 import AuditService from './auditService'
 import PrisonerSearchService from './prisonerSearchService'
@@ -41,7 +40,7 @@ export const services = () => {
   const contactAuditHistoryService = new ContactAuditHistoryService(contactsApiClient)
   const permissionsService = PrisonPermissionsService.create({
     prisonerSearchConfig: config.apis.prisonerSearchApi,
-    authenticationClient: new AuthenticationClient(config.apis.hmppsAuth, logger, hmppsAuthClient.tokenStore),
+    authenticationClient: hmppsAuthClient,
     logger,
     ...(applicationInsightsClient && { telemetryClient: applicationInsightsClient }),
   })

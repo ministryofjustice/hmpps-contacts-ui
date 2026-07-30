@@ -1,8 +1,8 @@
 import { Readable } from 'stream'
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
+import { AuthenticationClient, InMemoryTokenStore } from '@ministryofjustice/hmpps-auth-clients'
+import config from '../config'
 import PrisonApiClient from './prisonApiClient'
-import AuthenticationClient from './authenticationClient'
-import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -13,7 +13,7 @@ describe('Prison api client tests', () => {
   const stream = jest.spyOn(RestClient.prototype, 'stream')
 
   beforeEach(() => {
-    prisonApiClient = new PrisonApiClient(new AuthenticationClient())
+    prisonApiClient = new PrisonApiClient(new AuthenticationClient(config.apis.hmppsAuth, console))
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 

@@ -1,7 +1,6 @@
 import nock from 'nock'
-import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
+import { AuthenticationClient, InMemoryTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 import AlertsApiClient from './alertsApiClient'
-import AuthenticationClient from './authenticationClient'
 import config from '../config'
 import pagedPrisonerAlertsData from '../testutils/testPrisonerAlertsData'
 
@@ -15,7 +14,7 @@ describe('Alerts api client tests', () => {
 
   beforeEach(() => {
     fakeAlertsApi = nock(config.apis.alertsApi.url)
-    alertsApiClient = new AlertsApiClient(new AuthenticationClient())
+    alertsApiClient = new AlertsApiClient(new AuthenticationClient(config.apis.hmppsAuth, console))
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 

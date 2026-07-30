@@ -1,9 +1,8 @@
 import nock from 'nock'
 
+import { AuthenticationClient, InMemoryTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
-import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
-import AuthenticationClient from './authenticationClient'
 import TestData from '../routes/testutils/testData'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
@@ -16,7 +15,7 @@ describe('Prisoner search', () => {
 
   beforeEach(() => {
     fakePrisonerSearchApi = nock(config.apis.prisonerSearchApi.url)
-    prisonerSearchApiClient = new PrisonerSearchApiClient(new AuthenticationClient())
+    prisonerSearchApiClient = new PrisonerSearchApiClient(new AuthenticationClient(config.apis.hmppsAuth, console))
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 

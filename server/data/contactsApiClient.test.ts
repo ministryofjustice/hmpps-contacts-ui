@@ -1,8 +1,7 @@
 import nock from 'nock'
+import { AuthenticationClient, InMemoryTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
-import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import ContactsApiClient from './contactsApiClient'
-import AuthenticationClient from './authenticationClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import TestData from '../routes/testutils/testData'
 import {
@@ -38,7 +37,7 @@ describe('contactsApiClient', () => {
 
   beforeEach(() => {
     fakeContactsApi = nock(config.apis.contactsApi.url)
-    contactsApiClient = new ContactsApiClient(new AuthenticationClient())
+    contactsApiClient = new ContactsApiClient(new AuthenticationClient(config.apis.hmppsAuth, console))
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 
