@@ -1,6 +1,5 @@
 import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
-import AuditService from './auditService'
-import { AuditEvent } from '../data/hmppsAuditClient'
+import AuditService, { AuditEvent } from './auditService'
 
 export default class AuditedService {
   constructor(protected readonly auditService: AuditService) {}

@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import { AuditService } from '../services'
-import { AuditEvent } from '../data/hmppsAuditClient'
+import { AuditEvent } from '../services/auditService'
 
 export const auditPageViewMiddleware = (auditService: AuditService): RequestHandler => {
   const CONTACT_ID_REGEX = /(contacts\/manage\/|contacts\/add\/match\/)([0-9]+)\//

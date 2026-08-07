@@ -1,8 +1,8 @@
 import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
+import { AuditClient } from '@ministryofjustice/hmpps-audit-client'
 import config from '../config'
 import logger from '../../logger'
 import applicationInfoSupplier from '../applicationInfo'
-import HmppsAuditClient from './hmppsAuditClient'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
 import ContactsApiClient from './contactsApiClient'
 import PrisonApiClient from './prisonApiClient'
@@ -22,7 +22,7 @@ export const dataAccess = () => {
   return {
     applicationInfo,
     hmppsAuthClient,
-    hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
+    hmppsAuditClient: new AuditClient(config.sqs.audit, logger),
     prisonerSearchApiClient: new PrisonerSearchApiClient(hmppsAuthClient),
     contactsApiClient: new ContactsApiClient(hmppsAuthClient),
     alertsApiClient: new AlertsApiClient(hmppsAuthClient),
@@ -31,4 +31,4 @@ export const dataAccess = () => {
   }
 }
 
-export { HmppsAuditClient, PrisonerSearchApiClient, ContactsApiClient, PrisonApiClient, OrganisationsApiClient }
+export { PrisonerSearchApiClient, ContactsApiClient, PrisonApiClient, OrganisationsApiClient }

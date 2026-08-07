@@ -1,4 +1,31 @@
-import HmppsAuditClient, { AuditEvent } from '../data/hmppsAuditClient'
+import { AuditClient, SubjectType } from '@ministryofjustice/hmpps-audit-client'
+
+/**
+ * Subject types recorded against audit events raised by this service, extending the standard
+ * `SubjectType`s provided by `@ministryofjustice/hmpps-audit-client` with contacts-specific ones.
+ */
+export type ContactsSubjectType =
+  | 'CONTACT'
+  | 'CONTACT_ADDRESS'
+  | 'CONTACT_ADDRESS_PHONE'
+  | 'CONTACT_EMAIL'
+  | 'CONTACT_EMPLOYMENT'
+  | 'CONTACT_IDENTITY'
+  | 'CONTACT_PHONE'
+  | 'CONTACT_RELATIONSHIP'
+  | 'CONTACT_RELATIONSHIP_RESTRICTION'
+  | 'CONTACT_RESTRICTION'
+  | 'PRISONER'
+  | SubjectType
+
+export interface AuditEvent {
+  what: string
+  who: string
+  subjectId?: string
+  subjectType?: ContactsSubjectType
+  correlationId?: string
+  details?: object
+}
 
 export enum Page {
   // Home page
@@ -128,16 +155,23 @@ export enum Page {
 export interface PageViewEventDetails {
   who: string
   subjectId?: string
-  subjectType?: string
+  subjectType?: ContactsSubjectType
   correlationId?: string
   details?: object
 }
 
 export default class AuditService {
-  constructor(private readonly hmppsAuditClient: HmppsAuditClient) {}
+  constructor(private readonly hmppsAuditClient: AuditClient) {}
 
   async logAuditEvent(event: AuditEvent) {
-    await this.hmppsAuditClient.sendMessage(event)
+    await this.hmppsAuditClient.sendMessage<ContactsSubjectType>({
+      action: event.what,
+      who: event.who,
+      subjectId: event.subjectId,
+      subjectType: event.subjectType ?? 'NOT_APPLICABLE',
+      correlationId: event.correlationId,
+      details: event.details,
+    })
   }
 
   async logPageView(page: Page, eventDetails: PageViewEventDetails) {
@@ -145,6 +179,6 @@ export default class AuditService {
       ...eventDetails,
       what: `PAGE_VIEW_${page}`,
     }
-    await this.hmppsAuditClient.sendMessage(event)
+    await this.logAuditEvent(event)
   }
 }
