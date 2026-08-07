@@ -16,7 +16,9 @@ export default class AuditedService {
         what: `FAILURE_${event.what}`,
         details: {
           ...(event.details ?? {}),
-          statusCode: (ex as SanitisedError).responseStatus,
+          // API clients throw SanitisedError (.responseStatus), but fall back to .status too, matching
+          // errorHandler.ts's pattern, in case an http-errors-style error reaches here from elsewhere.
+          statusCode: (ex as SanitisedError & { status?: number }).responseStatus ?? (ex as { status?: number }).status,
         },
       })
       throw ex

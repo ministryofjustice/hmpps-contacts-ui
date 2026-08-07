@@ -64,6 +64,7 @@
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
+    "proxy-from-env": "2.1.0",
     "redis": "^6.1.0",
     "superagent": "^10.3.0",
     "zod": "^4.4.3"
@@ -87,6 +88,7 @@
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
+    "@types/proxy-from-env": "1.0.4",
     "@types/superagent": "^8.1.11",
     "@types/supertest": "^7.2.1",
     "audit-ci": "^7.1.0",

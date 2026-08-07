@@ -1,5 +1,6 @@
 import { NodeHttpHandler } from '@smithy/node-http-handler'
 import { HttpsProxyAgent } from 'https-proxy-agent'
+import { getProxyForUrl } from 'proxy-from-env'
 
 /**
  * Determines if proxy support should be enabled based on Node proxy configuration.
@@ -20,13 +21,6 @@ export function isProxyEnabled(): boolean {
 }
 
 /**
- * Reads proxy configuration from environment variables (case-insensitive).
- */
-export function getProxyUrl(): string | undefined {
-  return process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy
-}
-
-/**
  * Creates an SQS client request handler with proxy support if configured.
  *
  * `@aws-sdk/client-sqs`'s `SQSClient` does not read `HTTP_PROXY`/`HTTPS_PROXY` env vars on its
@@ -34,13 +28,19 @@ export function getProxyUrl(): string | undefined {
  * is enabled and a proxy is configured via environment variables, this returns a `NodeHttpHandler`
  * configured with an `HttpsProxyAgent`. Otherwise it returns an empty object so `SQSClient` falls
  * back to its default handler.
+ *
+ * `targetUrl` (the SQS queue URL that will actually be called) is passed through `proxy-from-env`'s
+ * `getProxyForUrl`, which correctly honours `NO_PROXY`/`no_proxy` (exact hostnames, suffix-matched
+ * `.example.com`-style entries, and the `*` wildcard to disable proxying entirely) - a manual
+ * HTTP_PROXY/HTTPS_PROXY env var read alone would ignore NO_PROXY and force traffic through the
+ * proxy even for hosts it's meant to bypass (for example a local/test SQS endpoint).
  */
-export function createProxyRequestHandler(): { requestHandler?: NodeHttpHandler } {
+export function createProxyRequestHandler(targetUrl: string): { requestHandler?: NodeHttpHandler } {
   if (!isProxyEnabled()) {
     return {}
   }
 
-  const proxyUrl = getProxyUrl()
+  const proxyUrl = getProxyForUrl(targetUrl)
   if (!proxyUrl) {
     return {}
   }

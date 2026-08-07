@@ -42,6 +42,17 @@ describe('telemetryService', () => {
     })
   })
 
+  it('should accept boolean properties', () => {
+    telemetryService.trackEvent('FOO', user, { flag: true, otherFlag: false })
+
+    expect(mockTrackEvent).toHaveBeenCalledWith('FOO', {
+      flag: true,
+      otherFlag: false,
+      username: 'username',
+      activeCaseLoadId: 'BXI',
+    })
+  })
+
   it('should not blow up if the telemetry service fails', () => {
     mockTrackEvent.mockImplementation(() => {
       throw Error('Bang')
