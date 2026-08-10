@@ -15,11 +15,16 @@ export default class TelemetryService {
         Object.entries(properties ?? {}).filter(([, value]) => value !== null && value !== undefined),
       ) as Record<string, string | number | boolean>
 
-      telemetry.trackEvent(name, {
+      const eventProperties: Record<string, string | number | boolean> = {
         ...sanitisedProperties,
         username: user.username,
-        activeCaseLoadId: user.activeCaseLoad?.caseLoadId ?? '',
-      })
+      }
+
+      if (user.activeCaseLoad?.caseLoadId) {
+        eventProperties.activeCaseLoadId = user.activeCaseLoad.caseLoadId
+      }
+
+      telemetry.trackEvent(name, eventProperties)
     } catch (error) {
       logger.error('Error sending telemetry event, ', error)
     }

@@ -20,13 +20,18 @@ initialiseTelemetry({
  * the user (and their active caseload) has been populated onto res.locals.
  */
 export function telemetryUserAttributesMiddleware(): RequestHandler {
-  return (req, res, next) => {
+  return (_req, res, next) => {
     const { username, activeCaseLoad } = res.locals.user ?? {}
     if (username) {
-      telemetry.setSpanAttributes({
+      const spanAttributes: Record<string, string> = {
         username,
-        activeCaseLoadId: activeCaseLoad?.caseLoadId ?? '',
-      })
+      }
+
+      if (activeCaseLoad?.caseLoadId) {
+        spanAttributes.activeCaseLoadId = activeCaseLoad.caseLoadId
+      }
+
+      telemetry.setSpanAttributes(spanAttributes)
     }
     next()
   }
