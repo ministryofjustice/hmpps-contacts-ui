@@ -47,7 +47,7 @@ describe('ContactAuditHistoryService', () => {
     const result = await service.getNameChangeHistory('8', user)
 
     expect(result).toEqual([])
-    expect(apiClient.getContactHistory).toHaveBeenCalledWith(8, user)
+    expect(apiClient.getContactHistory).toHaveBeenCalledWith(8, user.username)
   })
 
   it('detects a name change between consecutive revisions and maps audit fields', async () => {
@@ -112,7 +112,7 @@ describe('ContactAuditHistoryService', () => {
         changedOn: '2025-11-19T12:09:56.700724',
       },
     ])
-    expect(apiClient.getContactHistory).toHaveBeenCalledWith(8, user)
+    expect(apiClient.getContactHistory).toHaveBeenCalledWith(8, user.username)
   })
 
   it('uses fallback fields for updatedBy and changedOn when updatedBy/updatedTime are missing', async () => {

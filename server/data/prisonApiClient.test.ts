@@ -15,7 +15,7 @@ const user = { token: 'userToken', username: 'user1' } as Express.User
 
 describe('Prison api client tests', () => {
   let prisonApiClient: PrisonApiClient
-  const stream = jest.spyOn(RestClient.prototype, 'stream')
+  const prisonerThumbnail = jest.spyOn(RestClient.prototype, 'stream')
 
   beforeEach(() => {
     prisonApiClient = new PrisonApiClient(new AuthenticationClient(config.apis.hmppsAuth, console))
@@ -28,9 +28,9 @@ describe('Prison api client tests', () => {
   })
 
   it('Get prisoner image', async () => {
-    stream.mockResolvedValue(Readable.from('image'))
-    const result = await prisonApiClient.getImage('ABC1234', user)
-    expect(stream).toHaveBeenCalledWith(
+    prisonerThumbnail.mockResolvedValue(Readable.from('image'))
+    const result = await prisonApiClient.getImage('ABC1234', user.username)
+    expect(prisonerThumbnail).toHaveBeenCalledWith(
       { path: '/api/bookings/offenderNo/ABC1234/image/data' },
       { tokenType: 'SYSTEM_TOKEN', user: { username: 'user1' } },
     )
@@ -38,22 +38,24 @@ describe('Prison api client tests', () => {
   })
 
   it('Falls back to a placeholder image when the prisoner has no image', async () => {
-    stream.mockRejectedValue({ responseStatus: 404 })
-    const result = await prisonApiClient.getImage('ABC1234', user)
+    prisonerThumbnail.mockRejectedValue({ responseStatus: 404 })
+    const result = await prisonApiClient.getImage('ABC1234', user.username)
     expect(result).toBeDefined()
   })
 
   it('Rejects when the prisoner has no image and the placeholder image cannot be opened', async () => {
-    stream.mockRejectedValue({ responseStatus: 404 })
+    prisonerThumbnail.mockRejectedValue({ responseStatus: 404 })
     const brokenStream = new Readable({ read: () => {} })
     ;(fs.createReadStream as jest.Mock).mockReturnValue(brokenStream as unknown as fs.ReadStream)
     setImmediate(() => brokenStream.emit('error', new Error('ENOENT: no such file or directory')))
 
-    await expect(prisonApiClient.getImage('ABC1234', user)).rejects.toThrow('ENOENT: no such file or directory')
+    await expect(prisonApiClient.getImage('ABC1234', user.username)).rejects.toThrow(
+      'ENOENT: no such file or directory',
+    )
   })
 
   it('Re-throws non-404 errors without falling back to a placeholder image', async () => {
-    stream.mockRejectedValue({ responseStatus: 500 })
-    await expect(prisonApiClient.getImage('ABC1234', user)).rejects.toEqual({ responseStatus: 500 })
+    prisonerThumbnail.mockRejectedValue({ responseStatus: 500 })
+    await expect(prisonApiClient.getImage('ABC1234', user.username)).rejects.toEqual({ responseStatus: 500 })
   })
 })

@@ -11,6 +11,6 @@ export default class AlertsService extends AuditedService {
   }
 
   async getAlerts(prisonerNumber: string, user: Express.User) {
-    return this.alertsApiClient.getAllAlerts(prisonerNumber, user)
+    return this.alertsApiClient.getAllAlerts(prisonerNumber, user.username)
   }
 }

@@ -23,7 +23,7 @@ describe('Prisoner image service', () => {
     it('should get the prisoner image', async () => {
       prisonApiClient.getImage.mockResolvedValue(Readable.from('image'))
       await prisonerImageService.getImage('ABC123', user)
-      expect(prisonApiClient.getImage).toHaveBeenCalledWith('ABC123', user)
+      expect(prisonApiClient.getImage).toHaveBeenCalledWith('ABC123', user.username)
     })
   })
 })

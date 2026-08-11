@@ -32,7 +32,7 @@ describe('Alerts api client tests', () => {
     const alert = pagedPrisonerAlertsData()
 
     fakeAlertsApi.get('/prisoners/A1234BC/alerts').matchHeader('authorization', `Bearer systemToken`).reply(200, alert)
-    const result = await alertsApiClient.getAllAlerts('A1234BC', user)
+    const result = await alertsApiClient.getAllAlerts('A1234BC', user.username)
 
     expect(result).toEqual(alert)
   })

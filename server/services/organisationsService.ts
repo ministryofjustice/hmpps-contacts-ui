@@ -17,14 +17,14 @@ export default class OrganisationsService {
     },
     user: Express.User,
   ): Promise<PagedModelOrganisationSummary> {
-    return this.organisationsApiClient.searchOrganisations(searchParams, user)
+    return this.organisationsApiClient.searchOrganisations(searchParams, user.username)
   }
 
   async getOrganisation(organisationId: number, user: Express.User): Promise<OrganisationDetails> {
-    return this.organisationsApiClient.getOrganisation(organisationId, user)
+    return this.organisationsApiClient.getOrganisation(organisationId, user.username)
   }
 
   async getOrganisationSummary(organisationId: number, user: Express.User): Promise<OrganisationSummary> {
-    return this.organisationsApiClient.getOrganisationSummary(organisationId, user)
+    return this.organisationsApiClient.getOrganisationSummary(organisationId, user.username)
   }
 }

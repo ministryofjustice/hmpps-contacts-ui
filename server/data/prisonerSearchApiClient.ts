@@ -8,7 +8,7 @@ export default class PrisonerSearchApiClient extends RestClient {
     super('prisonerSearchApiClient', config.apis.prisonerSearchApi, logger, authenticationClient)
   }
 
-  async getByPrisonerNumber(prisonerNumber: string, user: Express.User): Promise<Prisoner> {
-    return this.get({ path: `/prisoner/${prisonerNumber}` }, asSystem(user.username))
+  async getByPrisonerNumber(prisonerNumber: string, username: string): Promise<Prisoner> {
+    return this.get({ path: `/prisoner/${prisonerNumber}` }, asSystem(username))
   }
 }

@@ -28,7 +28,7 @@ export default class ReferenceDataService {
       if (refData) return refData
     }
 
-    refData = await this.contactsApiClient.getReferenceCodes(type, user)
+    refData = await this.contactsApiClient.getReferenceCodes(type, user.username)
     await this.referenceDataCache.setToken(
       `Ref-data:${type}`,
       JSON.stringify(refData),

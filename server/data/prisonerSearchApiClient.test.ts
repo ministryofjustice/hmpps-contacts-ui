@@ -38,7 +38,7 @@ describe('Prisoner search', () => {
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, prisoner)
 
-      const output = await prisonerSearchApiClient.getByPrisonerNumber('A1234BC', user)
+      const output = await prisonerSearchApiClient.getByPrisonerNumber('A1234BC', user.username)
 
       expect(output).toEqual(prisoner)
     })

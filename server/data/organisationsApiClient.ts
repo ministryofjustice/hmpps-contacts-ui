@@ -24,22 +24,22 @@ export default class OrganisationsApiClient extends RestClient {
       size: number
       sort: string[]
     },
-    user: Express.User,
+    username: string,
   ): Promise<PagedModelOrganisationSummary> {
     const name = encodeURIComponent(searchTerm)
     return this.get<PagedModelOrganisationSummary>(
       {
         path: `/organisation/search?name=${name}&page=${page}&size=${size}${sort.map(itm => `&sort=${encodeURIComponent(itm)}`).join('')}`,
       },
-      asSystem(user.username),
+      asSystem(username),
     )
   }
 
-  async getOrganisation(organisationId: number, user: Express.User): Promise<OrganisationDetails> {
-    return this.get<OrganisationDetails>({ path: `/organisation/${organisationId}` }, asSystem(user.username))
+  async getOrganisation(organisationId: number, username: string): Promise<OrganisationDetails> {
+    return this.get<OrganisationDetails>({ path: `/organisation/${organisationId}` }, asSystem(username))
   }
 
-  async getOrganisationSummary(organisationId: number, user: Express.User): Promise<OrganisationSummary> {
-    return this.get<OrganisationSummary>({ path: `/organisation/${organisationId}/summary` }, asSystem(user.username))
+  async getOrganisationSummary(organisationId: number, username: string): Promise<OrganisationSummary> {
+    return this.get<OrganisationSummary>({ path: `/organisation/${organisationId}/summary` }, asSystem(username))
   }
 }

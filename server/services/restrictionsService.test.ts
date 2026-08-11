@@ -59,7 +59,7 @@ describe('restrictionsService', () => {
         startDate: '2009-02-01',
       }
       expect(created).toStrictEqual(expectedResponse)
-      expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user)
+      expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user.username)
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_POST_CONTACT_RESTRICTION',
         who: 'user1',
@@ -87,7 +87,7 @@ describe('restrictionsService', () => {
         comments: 'Some comments',
       }
       expect(created).toStrictEqual(expectedResponse)
-      expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user)
+      expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user.username)
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_POST_CONTACT_RESTRICTION',
         who: 'user1',
@@ -131,7 +131,7 @@ describe('restrictionsService', () => {
         startDate: '2009-02-01',
       }
       expect(created).toStrictEqual(expectedResponse)
-      expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user)
+      expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user.username)
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_POST_CONTACT_RELATIONSHIP_RESTRICTION',
         who: 'user1',
@@ -168,7 +168,7 @@ describe('restrictionsService', () => {
         comments: 'Some comments',
       }
       expect(created).toStrictEqual(expectedResponse)
-      expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user)
+      expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user.username)
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_POST_CONTACT_RELATIONSHIP_RESTRICTION',
         who: 'user1',
@@ -243,7 +243,7 @@ describe('restrictionsService', () => {
         contactId,
         restrictionId,
         expectedRequest,
-        user,
+        user.username,
       )
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_PUT_CONTACT_RESTRICTION',
@@ -292,7 +292,7 @@ describe('restrictionsService', () => {
         contactId,
         restrictionId,
         expectedRequest,
-        user,
+        user.username,
       )
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_PUT_CONTACT_RESTRICTION',
@@ -375,7 +375,7 @@ describe('restrictionsService', () => {
         contactId,
         restrictionId,
         expectedRequest,
-        user,
+        user.username,
       )
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_PUT_CONTACT_RELATIONSHIP_RESTRICTION',
@@ -426,7 +426,7 @@ describe('restrictionsService', () => {
         contactId,
         restrictionId,
         expectedRequest,
-        user,
+        user.username,
       )
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_PUT_CONTACT_RELATIONSHIP_RESTRICTION',
@@ -513,7 +513,7 @@ describe('restrictionsService', () => {
       const result = await service.getGlobalRestrictions(expectedContact, user)
 
       // Assert
-      expect(apiClient.getGlobalContactRestrictions).toHaveBeenCalledWith(contactId, user)
+      expect(apiClient.getGlobalContactRestrictions).toHaveBeenCalledWith(contactId, user.username)
 
       expect(result).toEqual([
         {
@@ -560,7 +560,7 @@ describe('restrictionsService', () => {
       const result = await service.getRelationshipAndGlobalRestrictions(prisonerContactId, user)
 
       // Assert
-      expect(apiClient.getPrisonerContactRestrictions).toHaveBeenCalledWith(prisonerContactId, user)
+      expect(apiClient.getPrisonerContactRestrictions).toHaveBeenCalledWith(prisonerContactId, user.username)
 
       expect(result).toEqual({
         prisonerContactRestrictions: [

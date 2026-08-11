@@ -79,7 +79,7 @@ describe('contactsApiClient', () => {
         .reply(201, expectedContact)
 
       // When
-      const createdContact = await contactsApiClient.createContact(request, user)
+      const createdContact = await contactsApiClient.createContact(request, user.username)
 
       // Then
       expect(createdContact).toEqual(expectedContact)
@@ -109,7 +109,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.createContact(request, user)
+        await contactsApiClient.createContact(request, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -144,7 +144,7 @@ describe('contactsApiClient', () => {
         .reply(201, expected)
 
       // When
-      const result = await contactsApiClient.addContactRelationship(request, user)
+      const result = await contactsApiClient.addContactRelationship(request, user.username)
 
       // Then
       expect(result).toStrictEqual(expected)
@@ -178,7 +178,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.addContactRelationship(request, user)
+        await contactsApiClient.addContactRelationship(request, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -212,7 +212,7 @@ describe('contactsApiClient', () => {
           .reply(200, expectedCodes)
 
         // When
-        const createdContact = await contactsApiClient.getReferenceCodes(ReferenceCodeType.TITLE, user)
+        const createdContact = await contactsApiClient.getReferenceCodes(ReferenceCodeType.TITLE, user.username)
 
         // Then
         expect(createdContact).toEqual(expectedCodes)
@@ -233,7 +233,7 @@ describe('contactsApiClient', () => {
 
         // When
         try {
-          await contactsApiClient.getReferenceCodes(ReferenceCodeType.TITLE, user)
+          await contactsApiClient.getReferenceCodes(ReferenceCodeType.TITLE, user.username)
         } catch (error) {
           const e = error as { responseStatus: unknown; data: unknown }
           // Then
@@ -281,7 +281,7 @@ describe('contactsApiClient', () => {
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, results)
 
-      const output = await contactsApiClient.searchContact(contactSearchRequest, user, { page: 0, size: 20 })
+      const output = await contactsApiClient.searchContact(contactSearchRequest, user.username, { page: 0, size: 20 })
 
       expect(output).toEqual(results)
     })
@@ -304,7 +304,7 @@ describe('contactsApiClient', () => {
         .reply(200, expectedContact)
 
       // When
-      const createdContact = await contactsApiClient.getContact(123456, user)
+      const createdContact = await contactsApiClient.getContact(123456, user.username)
 
       // Then
       expect(createdContact).toEqual(expectedContact)
@@ -325,7 +325,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.getContact(123456, user)
+        await contactsApiClient.getContact(123456, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -352,7 +352,7 @@ describe('contactsApiClient', () => {
         .reply(200, expected)
 
       // When
-      const contact = await contactsApiClient.getPrisonerContactRelationship(123456, user)
+      const contact = await contactsApiClient.getPrisonerContactRelationship(123456, user.username)
 
       // Then
       expect(contact).toEqual(expected)
@@ -373,7 +373,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.getPrisonerContactRelationship(123456, user)
+        await contactsApiClient.getPrisonerContactRelationship(123456, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -406,7 +406,7 @@ describe('contactsApiClient', () => {
         .reply(200, expectedContactPhoneDetails)
 
       // When
-      const updated = await contactsApiClient.updateContactPhone(99, 77, request, user)
+      const updated = await contactsApiClient.updateContactPhone(99, 77, request, user.username)
 
       // Then
       expect(updated).toEqual(expectedContactPhoneDetails)
@@ -431,7 +431,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.updateContactPhone(99, 77, request, user)
+        await contactsApiClient.updateContactPhone(99, 77, request, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -448,7 +448,7 @@ describe('contactsApiClient', () => {
       fakeContactsApi.delete('/contact/99/phone/77').matchHeader('authorization', `Bearer systemToken`).reply(204)
 
       // When
-      await contactsApiClient.deleteContactPhone(99, 77, user)
+      await contactsApiClient.deleteContactPhone(99, 77, user.username)
     })
 
     it.each([400, 401, 403])('should propagate errors deleting contact phone %s', async (errorCode: number) => {
@@ -466,7 +466,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.deleteContactPhone(99, 77, user)
+        await contactsApiClient.deleteContactPhone(99, 77, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -494,7 +494,7 @@ describe('contactsApiClient', () => {
         .reply(201, expectedContact)
 
       // When
-      const updatedContact = await contactsApiClient.updateContactById(23, request, user)
+      const updatedContact = await contactsApiClient.updateContactById(23, request, user.username)
 
       // Then
       expect(nock.isDone()).toBe(true)
@@ -526,7 +526,7 @@ describe('contactsApiClient', () => {
           .reply(201, expectedContactIdentityDetails)
 
         // When
-        const createdContact = await contactsApiClient.createContactIdentity(99, request, user)
+        const createdContact = await contactsApiClient.createContactIdentity(99, request, user.username)
 
         // Then
         expect(createdContact).toStrictEqual(expectedContactIdentityDetails)
@@ -552,7 +552,7 @@ describe('contactsApiClient', () => {
 
         // When
         try {
-          await contactsApiClient.createContactIdentity(99, request, user)
+          await contactsApiClient.createContactIdentity(99, request, user.username)
         } catch (error) {
           const e = error as { responseStatus: unknown; data: unknown }
           // Then
@@ -586,7 +586,7 @@ describe('contactsApiClient', () => {
           .reply(200, expectedContactIdentityDetails)
 
         // When
-        const updated = await contactsApiClient.updateContactIdentity(99, 77, request, user)
+        const updated = await contactsApiClient.updateContactIdentity(99, 77, request, user.username)
 
         // Then
         expect(updated).toEqual(expectedContactIdentityDetails)
@@ -612,7 +612,7 @@ describe('contactsApiClient', () => {
 
         // When
         try {
-          await contactsApiClient.updateContactIdentity(99, 77, request, user)
+          await contactsApiClient.updateContactIdentity(99, 77, request, user.username)
         } catch (error) {
           const e = error as { responseStatus: unknown; data: unknown }
           // Then
@@ -629,7 +629,7 @@ describe('contactsApiClient', () => {
         fakeContactsApi.delete('/contact/99/identity/77').matchHeader('authorization', `Bearer systemToken`).reply(204)
 
         // When
-        await contactsApiClient.deleteContactIdentity(99, 77, user)
+        await contactsApiClient.deleteContactIdentity(99, 77, user.username)
       })
 
       it.each([400, 401, 403])('should propagate errors deleting contact identity %s', async (errorCode: number) => {
@@ -647,7 +647,7 @@ describe('contactsApiClient', () => {
 
         // When
         try {
-          await contactsApiClient.deleteContactIdentity(99, 77, user)
+          await contactsApiClient.deleteContactIdentity(99, 77, user.username)
         } catch (error) {
           const e = error as { responseStatus: unknown; data: unknown }
           // Then
@@ -682,7 +682,7 @@ describe('contactsApiClient', () => {
           .reply(201, [expectedContactEmailDetails])
 
         // When
-        const createdContact = await contactsApiClient.createContactEmails(99, request, user)
+        const createdContact = await contactsApiClient.createContactEmails(99, request, user.username)
 
         // Then
         expect(createdContact).toEqual([expectedContactEmailDetails])
@@ -706,7 +706,7 @@ describe('contactsApiClient', () => {
 
         // When
         try {
-          await contactsApiClient.createContactEmails(99, request, user)
+          await contactsApiClient.createContactEmails(99, request, user.username)
         } catch (error) {
           const e = error as { responseStatus: unknown; data: unknown }
           // Then
@@ -739,7 +739,7 @@ describe('contactsApiClient', () => {
           .reply(200, expectedContactEmailDetails)
 
         // When
-        const updated = await contactsApiClient.updateContactEmail(99, 1, request, user)
+        const updated = await contactsApiClient.updateContactEmail(99, 1, request, user.username)
 
         // Then
         expect(updated).toEqual(expectedContactEmailDetails)
@@ -763,7 +763,7 @@ describe('contactsApiClient', () => {
 
         // When
         try {
-          await contactsApiClient.updateContactEmail(99, 1, request, user)
+          await contactsApiClient.updateContactEmail(99, 1, request, user.username)
         } catch (error) {
           const e = error as { responseStatus: unknown; data: unknown }
           // Then
@@ -781,7 +781,7 @@ describe('contactsApiClient', () => {
       fakeContactsApi.delete('/contact/99/email/77').matchHeader('authorization', `Bearer systemToken`).reply(204)
 
       // When
-      await contactsApiClient.deleteContactEmail(99, 77, user)
+      await contactsApiClient.deleteContactEmail(99, 77, user.username)
     })
 
     it.each([400, 401, 403])('should propagate errors deleting contact email %s', async (errorCode: number) => {
@@ -799,7 +799,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.deleteContactEmail(99, 77, user)
+        await contactsApiClient.deleteContactEmail(99, 77, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -826,7 +826,7 @@ describe('contactsApiClient', () => {
         .reply(201, expected)
 
       // When
-      const created = await contactsApiClient.createContactGlobalRestriction(99, request, user)
+      const created = await contactsApiClient.createContactGlobalRestriction(99, request, user.username)
 
       // Then
       expect(created).toEqual(expected)
@@ -851,7 +851,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.createContactGlobalRestriction(99, request, user)
+        await contactsApiClient.createContactGlobalRestriction(99, request, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -879,7 +879,7 @@ describe('contactsApiClient', () => {
         .reply(201, expected)
 
       // When
-      const created = await contactsApiClient.createPrisonerContactRestriction(66, request, user)
+      const created = await contactsApiClient.createPrisonerContactRestriction(66, request, user.username)
 
       // Then
       expect(created).toEqual(expected)
@@ -906,7 +906,7 @@ describe('contactsApiClient', () => {
 
         // When
         try {
-          await contactsApiClient.createPrisonerContactRestriction(99, request, user)
+          await contactsApiClient.createPrisonerContactRestriction(99, request, user.username)
         } catch (error) {
           const e = error as { responseStatus: unknown; data: unknown }
           // Then
@@ -934,7 +934,7 @@ describe('contactsApiClient', () => {
         .reply(201, expected)
 
       // When
-      const created = await contactsApiClient.updateContactGlobalRestriction(99, 123456, request, user)
+      const created = await contactsApiClient.updateContactGlobalRestriction(99, 123456, request, user.username)
 
       // Then
       expect(created).toEqual(expected)
@@ -959,7 +959,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.updateContactGlobalRestriction(99, 123456, request, user)
+        await contactsApiClient.updateContactGlobalRestriction(99, 123456, request, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -987,7 +987,7 @@ describe('contactsApiClient', () => {
         .reply(201, expected)
 
       // When
-      const created = await contactsApiClient.updatePrisonerContactRestriction(66, 123456, request, user)
+      const created = await contactsApiClient.updatePrisonerContactRestriction(66, 123456, request, user.username)
 
       // Then
       expect(created).toEqual(expected)
@@ -1014,7 +1014,7 @@ describe('contactsApiClient', () => {
 
         // When
         try {
-          await contactsApiClient.updatePrisonerContactRestriction(99, 123456, request, user)
+          await contactsApiClient.updatePrisonerContactRestriction(99, 123456, request, user.username)
         } catch (error) {
           const e = error as { responseStatus: unknown; data: unknown }
           // Then
@@ -1044,7 +1044,7 @@ describe('contactsApiClient', () => {
         .reply(201, expected)
 
       // When
-      const created = await contactsApiClient.createContactAddress(99, request, user)
+      const created = await contactsApiClient.createContactAddress(99, request, user.username)
 
       // Then
       expect(created).toEqual(expected)
@@ -1072,7 +1072,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.createContactAddress(99, request, user)
+        await contactsApiClient.createContactAddress(99, request, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -1100,7 +1100,7 @@ describe('contactsApiClient', () => {
         .reply(201, expected)
 
       // When
-      const created = await contactsApiClient.updateContactAddress(99, 123456, request, user)
+      const created = await contactsApiClient.updateContactAddress(99, 123456, request, user.username)
 
       // Then
       expect(created).toEqual(expected)
@@ -1127,7 +1127,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.updateContactAddress(99, 123456, request, user)
+        await contactsApiClient.updateContactAddress(99, 123456, request, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -1160,7 +1160,7 @@ describe('contactsApiClient', () => {
         .reply(200, expectedContactAddressPhoneDetails)
 
       // When
-      const updated = await contactsApiClient.updateContactAddressPhone(99, 123456, 77, request, user)
+      const updated = await contactsApiClient.updateContactAddressPhone(99, 123456, 77, request, user.username)
 
       // Then
       expect(updated).toEqual(expectedContactAddressPhoneDetails)
@@ -1187,7 +1187,7 @@ describe('contactsApiClient', () => {
 
         // When
         try {
-          await contactsApiClient.updateContactAddressPhone(99, 123456, 77, request, user)
+          await contactsApiClient.updateContactAddressPhone(99, 123456, 77, request, user.username)
         } catch (error) {
           const e = error as { responseStatus: unknown; data: unknown }
           // Then
@@ -1208,7 +1208,7 @@ describe('contactsApiClient', () => {
         .reply(204)
 
       // When
-      await contactsApiClient.deleteContactAddressPhone(99, 123456, 77, user)
+      await contactsApiClient.deleteContactAddressPhone(99, 123456, 77, user.username)
     })
 
     it.each([400, 401, 403])('should propagate errors deleting contact address phone %s', async (errorCode: number) => {
@@ -1226,7 +1226,7 @@ describe('contactsApiClient', () => {
 
       // When
       try {
-        await contactsApiClient.deleteContactAddressPhone(99, 123456, 77, user)
+        await contactsApiClient.deleteContactAddressPhone(99, 123456, 77, user.username)
       } catch (error) {
         const e = error as { responseStatus: unknown; data: unknown }
         // Then
@@ -1259,7 +1259,12 @@ describe('contactsApiClient', () => {
         .reply(200, page)
 
       // When
-      const createdContact = await contactsApiClient.filterPrisonerContacts('AB1234BC', {}, { page: 1, size: 98 }, user)
+      const createdContact = await contactsApiClient.filterPrisonerContacts(
+        'AB1234BC',
+        {},
+        { page: 1, size: 98 },
+        user.username,
+      )
 
       // Then
       expect(createdContact).toEqual(page)
@@ -1305,7 +1310,12 @@ describe('contactsApiClient', () => {
         size: 98,
         sort: ['lastName,desc', 'firstName,asc'],
       }
-      const createdContact = await contactsApiClient.filterPrisonerContacts('AB1234BC', filter, pagination, user)
+      const createdContact = await contactsApiClient.filterPrisonerContacts(
+        'AB1234BC',
+        filter,
+        pagination,
+        user.username,
+      )
 
       // Then
       expect(createdContact).toEqual(page)

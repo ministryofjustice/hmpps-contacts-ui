@@ -51,6 +51,6 @@ export default class ContactAuditHistoryService {
   }
 
   private async getContactHistory(contactId: number, user: Express.User): Promise<ContactAuditEntry[]> {
-    return this.contactsApiClient.getContactHistory(contactId, user)
+    return this.contactsApiClient.getContactHistory(contactId, user.username)
   }
 }

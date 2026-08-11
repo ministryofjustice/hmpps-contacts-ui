@@ -8,7 +8,7 @@ export default class PrisonerAddressService {
 
   async getPrimaryAddress(prisonerNumber: string, user: Express.User): Promise<AddressLines | undefined> {
     return this.prisonApiClient
-      .getOffenderAddresses(prisonerNumber, user)
+      .getOffenderAddresses(prisonerNumber, user.username)
       .then(addresses => addresses.find(address => address.primary))
       .then(
         primaryAddress =>
