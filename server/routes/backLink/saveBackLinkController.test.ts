@@ -29,7 +29,7 @@ describe('GET /save-backlink', () => {
       'returnPath=/prisoner/A1234BC/personal%23next-of-kin&' +
       'redirectPath=/prisoner/A1234BC/contacts/manage/123/relationship/456'
 
-    const expectedRedirectPath = `${config.domain}/prisoner/A1234BC/contacts/manage/123/relationship/456`
+    const expectedRedirectPath = `${config.ingressUrl}/prisoner/A1234BC/contacts/manage/123/relationship/456`
 
     const expectedReturnPath = `${config.serviceUrls.prisonerProfileUrl}/prisoner/A1234BC/personal#next-of-kin`
 

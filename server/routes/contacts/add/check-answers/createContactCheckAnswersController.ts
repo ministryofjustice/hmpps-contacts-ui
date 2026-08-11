@@ -122,7 +122,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     const { user, prisonerPermissions } = res.locals
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    let result: { success: boolean; error?: { status: number } }
+    let result: { success: boolean; error?: { responseStatus: number } }
     if (journey.mode === 'NEW') {
       result = await this.contactService
         .createContact(journey, user, req.id)
@@ -148,7 +148,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     if (success) {
       delete req.session.addContactJourneys![journeyId]
       res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
-    } else if (error?.status === 409) {
+    } else if (error?.responseStatus === 409) {
       res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/add/handle-duplicate/${journey.id}`)
     } else {
       throw error

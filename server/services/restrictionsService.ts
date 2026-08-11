@@ -43,7 +43,7 @@ export default class RestrictionsService extends AuditedService {
     switch (journey.restrictionClass) {
       case 'CONTACT_GLOBAL':
         return this.handleAuditEvent(
-          this.contactsApiClient.createContactGlobalRestriction(journey.contactId, request, user),
+          this.contactsApiClient.createContactGlobalRestriction(journey.contactId, request, user.username),
           {
             what: 'API_POST_CONTACT_RESTRICTION',
             who: user.username,
@@ -59,7 +59,7 @@ export default class RestrictionsService extends AuditedService {
         )
       case 'PRISONER_CONTACT':
         return this.handleAuditEvent(
-          this.contactsApiClient.createPrisonerContactRestriction(journey.prisonerContactId!, request, user),
+          this.contactsApiClient.createPrisonerContactRestriction(journey.prisonerContactId!, request, user.username),
           {
             what: 'API_POST_CONTACT_RELATIONSHIP_RESTRICTION',
             who: user.username,
@@ -99,7 +99,7 @@ export default class RestrictionsService extends AuditedService {
       ...(comments ? { comments } : {}),
     }
     return this.handleAuditEvent(
-      this.contactsApiClient.updateContactGlobalRestriction(contactId, contactRestrictionId, request, user),
+      this.contactsApiClient.updateContactGlobalRestriction(contactId, contactRestrictionId, request, user.username),
       {
         what: 'API_PUT_CONTACT_RESTRICTION',
         who: user.username,
@@ -134,7 +134,7 @@ export default class RestrictionsService extends AuditedService {
         prisonerContactId,
         prisonerContactRestrictionId,
         request,
-        user,
+        user.username,
       ),
       {
         what: 'API_PUT_CONTACT_RELATIONSHIP_RESTRICTION',
@@ -148,13 +148,13 @@ export default class RestrictionsService extends AuditedService {
   }
 
   async getGlobalRestrictions(contact: ContactDetails, user: Express.User): Promise<ContactRestrictionDetails[]> {
-    return this.contactsApiClient.getGlobalContactRestrictions(contact.id, user)
+    return this.contactsApiClient.getGlobalContactRestrictions(contact.id, user.username)
   }
 
   async getRelationshipAndGlobalRestrictions(
     prisonerContactId: number,
     user: Express.User,
   ): Promise<PrisonerContactRestrictionsResponse> {
-    return this.contactsApiClient.getPrisonerContactRestrictions(prisonerContactId, user)
+    return this.contactsApiClient.getPrisonerContactRestrictions(prisonerContactId, user.username)
   }
 }

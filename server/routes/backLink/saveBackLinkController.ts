@@ -41,6 +41,6 @@ export default class SaveBackLinkController {
       prisonerContactId,
     }
 
-    res.redirect(config.domain + redirectPath)
+    res.redirect(config.ingressUrl + redirectPath)
   }
 }

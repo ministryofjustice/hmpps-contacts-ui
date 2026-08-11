@@ -11,7 +11,7 @@ describe('Prisoner address service', () => {
   let prisonerAddressService: PrisonerAddressService
 
   beforeEach(() => {
-    prisonApiClient = new PrisonApiClient() as jest.Mocked<PrisonApiClient>
+    prisonApiClient = new PrisonApiClient(undefined as never) as jest.Mocked<PrisonApiClient>
     prisonerAddressService = new PrisonerAddressService(prisonApiClient)
   })
 
@@ -24,7 +24,7 @@ describe('Prisoner address service', () => {
       prisonApiClient.getOffenderAddresses.mockResolvedValue([])
       const primaryAddress = await prisonerAddressService.getPrimaryAddress('ABC123', user)
       expect(primaryAddress).toBeUndefined()
-      expect(prisonApiClient.getOffenderAddresses).toHaveBeenCalledWith('ABC123', user)
+      expect(prisonApiClient.getOffenderAddresses).toHaveBeenCalledWith('ABC123', user.username)
     })
 
     it('should return undefined if there are no primary addresses', async () => {
@@ -61,7 +61,7 @@ describe('Prisoner address service', () => {
       prisonApiClient.getOffenderAddresses.mockResolvedValue([prisonerAddress1, prisonerAddress2])
       const primaryAddress = await prisonerAddressService.getPrimaryAddress('ABC123', user)
       expect(primaryAddress).toBeUndefined()
-      expect(prisonApiClient.getOffenderAddresses).toHaveBeenCalledWith('ABC123', user)
+      expect(prisonApiClient.getOffenderAddresses).toHaveBeenCalledWith('ABC123', user.username)
     })
 
     it('should return primary address', async () => {
@@ -114,7 +114,7 @@ describe('Prisoner address service', () => {
         postcode: 'Prisoner Postcode',
         countryCode: 'WALES',
       })
-      expect(prisonApiClient.getOffenderAddresses).toHaveBeenCalledWith('ABC123', user)
+      expect(prisonApiClient.getOffenderAddresses).toHaveBeenCalledWith('ABC123', user.username)
     })
   })
 })

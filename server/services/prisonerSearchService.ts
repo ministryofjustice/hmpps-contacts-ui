@@ -5,6 +5,6 @@ export default class PrisonerSearchService {
   constructor(private readonly prisonerSearchApiClient: PrisonerSearchApiClient) {}
 
   async getByPrisonerNumber(prisonerNumber: string, user: Express.User): Promise<Prisoner> {
-    return this.prisonerSearchApiClient.getByPrisonerNumber(prisonerNumber, user)
+    return this.prisonerSearchApiClient.getByPrisonerNumber(prisonerNumber, user.username)
   }
 }

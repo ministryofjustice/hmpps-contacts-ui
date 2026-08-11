@@ -1,10 +1,10 @@
 import passport from 'passport'
 import { Strategy } from 'passport-oauth2'
 import type { RequestHandler } from 'express'
+import type { AuthenticatedRequest } from '@ministryofjustice/hmpps-auth-clients'
 
 import config from '../config'
 import generateOauthClientToken from './clientCredentials'
-import type { TokenVerifier } from '../data/tokenVerification'
 
 passport.serializeUser((user, done) => {
   // Not used but required for Passport
@@ -16,11 +16,13 @@ passport.deserializeUser((user, done) => {
   done(null, user as Express.User)
 })
 
+export type TokenVerifier = (request: AuthenticatedRequest) => Promise<boolean>
+
 export type AuthenticationMiddleware = (tokenVerifier: TokenVerifier) => RequestHandler
 
 const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
   return async (req, res, next) => {
-    if (req.isAuthenticated() && (await verifyToken(req))) {
+    if (req.isAuthenticated() && (await verifyToken(req as unknown as AuthenticatedRequest))) {
       return next()
     }
     req.session.returnTo = req.originalUrl
@@ -33,9 +35,9 @@ function init(): void {
     {
       authorizationURL: `${config.apis.hmppsAuth.externalUrl}/oauth/authorize`,
       tokenURL: `${config.apis.hmppsAuth.url}/oauth/token`,
-      clientID: config.apis.hmppsAuth.signInClientId,
-      clientSecret: config.apis.hmppsAuth.signInClientSecret,
-      callbackURL: `${config.domain}/sign-in/callback`,
+      clientID: config.apis.hmppsAuth.authClientId,
+      clientSecret: config.apis.hmppsAuth.authClientSecret,
+      callbackURL: `${config.ingressUrl}/sign-in/callback`,
       state: true,
       customHeaders: { Authorization: generateOauthClientToken() },
     },

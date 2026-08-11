@@ -1,5 +1,5 @@
+import { RestClient, asSystem, type AuthenticationClient } from '@ministryofjustice/hmpps-rest-client'
 import config from '../config'
-import RestClient from './restClient'
 import logger from '../../logger'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import {
@@ -54,30 +54,30 @@ export type Pagination = {
 }
 
 export default class ContactsApiClient extends RestClient {
-  constructor() {
-    super('Contacts API client', config.apis.contactsApi)
+  constructor(authenticationClient: AuthenticationClient) {
+    super('Contacts API client', config.apis.contactsApi, logger, authenticationClient)
   }
 
-  async createContact(request: CreateContactRequest, user: Express.User): Promise<ContactCreationResult> {
+  async createContact(request: CreateContactRequest, username: string): Promise<ContactCreationResult> {
     return this.post<ContactCreationResult>(
       {
         path: `/contact`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
   async addContactRelationship(
     request: AddContactRelationshipRequest,
-    user: Express.User,
+    username: string,
   ): Promise<PrisonerContactRelationshipDetails> {
     return this.post<PrisonerContactRelationshipDetails>(
       {
         path: `/prisoner-contact`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -85,7 +85,7 @@ export default class ContactsApiClient extends RestClient {
     prisonerNumber: string,
     filter: PrisonerContactFilter,
     pagination: PrisonerContactPagination,
-    user: Express.User,
+    username: string,
   ): Promise<PagedModelPrisonerContactSummary> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
     return this.get<PagedModelPrisonerContactSummary>(
@@ -93,35 +93,35 @@ export default class ContactsApiClient extends RestClient {
         path: `/prisoner/${prisonerNumber}/contact`,
         query: { ...paginationParameters, ...filter },
       },
-      user,
+      asSystem(username),
     )
   }
 
   async getAllSummariesForPrisonerAndContact(
     prisonerNumber: string,
     contactId: number,
-    user: Express.User,
+    username: string,
   ): Promise<PrisonerContactSummary[]> {
     return this.get<PrisonerContactSummary[]>(
       {
         path: `/prisoner/${prisonerNumber}/contact/${contactId}`,
       },
-      user,
+      asSystem(username),
     )
   }
 
-  async getReferenceCodes(type: ReferenceCodeType, user: Express.User): Promise<ReferenceCode[]> {
+  async getReferenceCodes(type: ReferenceCodeType, username: string): Promise<ReferenceCode[]> {
     return this.get<ReferenceCode[]>(
       {
         path: `/reference-codes/group/${type}`,
       },
-      user,
+      asSystem(username),
     )
   }
 
   async searchContact(
     contactSearchRequest: ContactSearchRequest,
-    user: Express.User,
+    username: string,
     pagination?: Pagination,
   ): Promise<PagedModelContactSearchResultItem> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
@@ -143,40 +143,43 @@ export default class ContactsApiClient extends RestClient {
           ...paginationParameters,
         },
       },
-      user,
+      asSystem(username),
     )
   }
 
-  async getContact(contactId: number, user: Express.User): Promise<ContactDetails> {
-    return this.get<ContactDetails>({ path: `/contact/${contactId}` }, user)
+  async getContact(contactId: number, username: string): Promise<ContactDetails> {
+    return this.get<ContactDetails>({ path: `/contact/${contactId}` }, asSystem(username))
   }
 
-  async getContactHistory(contactId: number, user: Express.User): Promise<ContactAuditEntry[]> {
-    return this.get<ContactAuditEntry[]>({ path: `/contact/${contactId}/history` }, user)
+  async getContactHistory(contactId: number, username: string): Promise<ContactAuditEntry[]> {
+    return this.get<ContactAuditEntry[]>({ path: `/contact/${contactId}/history` }, asSystem(username))
   }
 
-  async getContactName(contactId: number, user: Express.User): Promise<ContactNameDetails> {
-    return this.get<ContactNameDetails>({ path: `/contact/${contactId}/name` }, user)
+  async getContactName(contactId: number, username: string): Promise<ContactNameDetails> {
+    return this.get<ContactNameDetails>({ path: `/contact/${contactId}/name` }, asSystem(username))
   }
 
   async getPrisonerContactRelationship(
     prisonerContactId: number,
-    user: Express.User,
+    username: string,
   ): Promise<PrisonerContactRelationshipDetails> {
-    return this.get<PrisonerContactRelationshipDetails>({ path: `/prisoner-contact/${prisonerContactId}` }, user)
+    return this.get<PrisonerContactRelationshipDetails>(
+      { path: `/prisoner-contact/${prisonerContactId}` },
+      asSystem(username),
+    )
   }
 
   async createContactPhones(
     contactId: number,
     request: CreateMultiplePhoneNumbersRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactPhoneDetails[]> {
     return this.post<ContactPhoneDetails[]>(
       {
         path: `/contact/${contactId}/phones`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -184,37 +187,37 @@ export default class ContactsApiClient extends RestClient {
     contactId: number,
     contactPhoneId: number,
     request: UpdatePhoneRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactPhoneDetails> {
     return this.put<ContactPhoneDetails>(
       {
         path: `/contact/${contactId}/phone/${contactPhoneId}`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
-  async deleteContactPhone(contactId: number, contactPhoneId: number, user: Express.User): Promise<void> {
+  async deleteContactPhone(contactId: number, contactPhoneId: number, username: string): Promise<void> {
     return this.delete(
       {
         path: `/contact/${contactId}/phone/${contactPhoneId}`,
       },
-      user,
+      asSystem(username),
     )
   }
 
   async createContactIdentity(
     contactId: number,
     request: CreateIdentityRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactIdentityDetails> {
     return this.post<ContactIdentityDetails>(
       {
         path: `/contact/${contactId}/identity`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -222,65 +225,65 @@ export default class ContactsApiClient extends RestClient {
     contactId: number,
     contactIdentityId: number,
     request: UpdateIdentityRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactIdentityDetails> {
     return this.put<ContactIdentityDetails>(
       {
         path: `/contact/${contactId}/identity/${contactIdentityId}`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
-  async deleteContactIdentity(contactId: number, contactIdentityId: number, user: Express.User): Promise<void> {
+  async deleteContactIdentity(contactId: number, contactIdentityId: number, username: string): Promise<void> {
     return this.delete(
       {
         path: `/contact/${contactId}/identity/${contactIdentityId}`,
       },
-      user,
+      asSystem(username),
     )
   }
 
   async updateContactById(
     contactId: number,
     request: PatchContactRequest,
-    user: Express.User,
+    username: string,
   ): Promise<PatchContactResponse> {
     return this.patch<PatchContactResponse>(
       {
         path: `/contact/${contactId}`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
   async updateContactRelationshipById(
     prisonerContactId: number,
     request: PatchRelationshipRequest,
-    user: Express.User,
+    username: string,
   ): Promise<void> {
     return this.patch(
       {
         path: `/prisoner-contact/${prisonerContactId}`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
   async createContactEmails(
     contactId: number,
     request: CreateMultipleEmailsRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactEmailDetails[]> {
     return this.post<ContactEmailDetails[]>(
       {
         path: `/contact/${contactId}/emails`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -288,37 +291,37 @@ export default class ContactsApiClient extends RestClient {
     contactId: number,
     contactEmailId: number,
     request: UpdateEmailRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactEmailDetails> {
     return this.put<ContactEmailDetails>(
       {
         path: `/contact/${contactId}/email/${contactEmailId}`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
-  async deleteContactEmail(contactId: number, contactEmailId: number, user: Express.User): Promise<void> {
+  async deleteContactEmail(contactId: number, contactEmailId: number, username: string): Promise<void> {
     return this.delete(
       {
         path: `/contact/${contactId}/email/${contactEmailId}`,
       },
-      user,
+      asSystem(username),
     )
   }
 
   async createContactGlobalRestriction(
     contactId: number,
     request: CreateContactRestrictionRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactRestrictionDetails> {
     return this.post<ContactRestrictionDetails>(
       {
         path: `/contact/${contactId}/restriction`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -326,28 +329,28 @@ export default class ContactsApiClient extends RestClient {
     contactId: number,
     contactRestrictionId: number,
     request: UpdateContactRestrictionRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactRestrictionDetails> {
     return this.put<ContactRestrictionDetails>(
       {
         path: `/contact/${contactId}/restriction/${contactRestrictionId}`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
   async createPrisonerContactRestriction(
     prisonerContactId: number,
     request: CreatePrisonerContactRestrictionRequest,
-    user: Express.User,
+    username: string,
   ): Promise<PrisonerContactRestrictionDetails> {
     return this.post<PrisonerContactRestrictionDetails>(
       {
         path: `/prisoner-contact/${prisonerContactId}/restriction`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -355,42 +358,42 @@ export default class ContactsApiClient extends RestClient {
     prisonerContactId: number,
     prisonerContactRestrictionId: number,
     request: UpdatePrisonerContactRestrictionRequest,
-    user: Express.User,
+    username: string,
   ): Promise<PrisonerContactRestrictionDetails> {
     return this.put<PrisonerContactRestrictionDetails>(
       {
         path: `/prisoner-contact/${prisonerContactId}/restriction/${prisonerContactRestrictionId}`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
-  async getGlobalContactRestrictions(contactId: number, user: Express.User): Promise<ContactRestrictionDetails[]> {
-    return this.get<ContactRestrictionDetails[]>({ path: `/contact/${contactId}/restriction` }, user)
+  async getGlobalContactRestrictions(contactId: number, username: string): Promise<ContactRestrictionDetails[]> {
+    return this.get<ContactRestrictionDetails[]>({ path: `/contact/${contactId}/restriction` }, asSystem(username))
   }
 
   async getPrisonerContactRestrictions(
     prisonerContactId: number,
-    user: Express.User,
+    username: string,
   ): Promise<PrisonerContactRestrictionsResponse> {
     return this.get<PrisonerContactRestrictionsResponse>(
       { path: `/prisoner-contact/${prisonerContactId}/restriction` },
-      user,
+      asSystem(username),
     )
   }
 
   async createContactAddress(
     contactId: number,
     request: CreateContactAddressRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactAddressDetails> {
     return this.post<ContactAddressDetails>(
       {
         path: `/contact/${contactId}/address`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -398,14 +401,14 @@ export default class ContactsApiClient extends RestClient {
     contactId: number,
     contactAddressId: number,
     request: PatchContactAddressRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactAddressDetails> {
     return this.patch<ContactAddressDetails>(
       {
         path: `/contact/${contactId}/address/${contactAddressId}`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -413,14 +416,14 @@ export default class ContactsApiClient extends RestClient {
     contactId: number,
     contactAddressId: number,
     request: CreateMultiplePhoneNumbersRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactAddressPhoneDetails[]> {
     return this.post<ContactAddressPhoneDetails[]>(
       {
         path: `/contact/${contactId}/address/${contactAddressId}/phones`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -429,14 +432,14 @@ export default class ContactsApiClient extends RestClient {
     contactAddressId: number,
     contactAddressPhoneId: number,
     request: UpdateContactAddressPhoneRequest,
-    user: Express.User,
+    username: string,
   ): Promise<ContactAddressPhoneDetails> {
     return this.put<ContactAddressPhoneDetails>(
       {
         path: `/contact/${contactId}/address/${contactAddressId}/phone/${contactAddressPhoneId}`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -444,13 +447,13 @@ export default class ContactsApiClient extends RestClient {
     contactId: number,
     contactAddressId: number,
     contactAddressPhoneId: number,
-    user: Express.User,
+    username: string,
   ): Promise<void> {
     return this.delete(
       {
         path: `/contact/${contactId}/address/${contactAddressId}/phone/${contactAddressPhoneId}`,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -458,13 +461,13 @@ export default class ContactsApiClient extends RestClient {
     contactId: number,
     page: number,
     size: number,
-    user: Express.User,
+    username: string,
   ): Promise<PagedModelLinkedPrisonerDetails> {
     return this.get<PagedModelLinkedPrisonerDetails>(
       {
         path: `/contact/${contactId}/linked-prisoners?page=${page}&size=${size}`,
       },
-      user,
+      asSystem(username),
     )
   }
 
@@ -472,7 +475,7 @@ export default class ContactsApiClient extends RestClient {
     prisonerNumber: string,
     page: number,
     size: number,
-    user: Express.User,
+    username: string,
     currentTerm: boolean,
     paged: boolean,
   ): Promise<PagedModelPrisonerRestrictionDetails> {
@@ -480,35 +483,35 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/prisoner-restrictions/${prisonerNumber}?page=${page}&size=${size}&currentTerm=${currentTerm}&paged=${paged}`,
       },
-      user,
+      asSystem(username),
     )
   }
 
-  async patchEmployments(contactId: number, request: PatchEmploymentsRequest, user: Express.User) {
+  async patchEmployments(contactId: number, request: PatchEmploymentsRequest, username: string) {
     return this.patch(
       {
         path: `/contact/${contactId}/employment`,
         data: request,
       },
-      user,
+      asSystem(username),
     )
   }
 
-  async deleteContactRelationship(prisonerContactId: number, user: Express.User): Promise<void> {
+  async deleteContactRelationship(prisonerContactId: number, username: string): Promise<void> {
     return this.delete(
       {
         path: `/prisoner-contact/${prisonerContactId}`,
       },
-      user,
+      asSystem(username),
     )
   }
 
-  async planDeleteContactRelationship(prisonerContactId: number, user: Express.User): Promise<RelationshipDeletePlan> {
+  async planDeleteContactRelationship(prisonerContactId: number, username: string): Promise<RelationshipDeletePlan> {
     return this.get<RelationshipDeletePlan>(
       {
         path: `/prisoner-contact/${prisonerContactId}/plan-delete`,
       },
-      user,
+      asSystem(username),
     )
   }
 }

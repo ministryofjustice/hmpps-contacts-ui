@@ -8,7 +8,7 @@ import { getFrontendComponents, retrieveCaseLoadData } from '@ministryofjustice/
 import config from './config'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
-import { appInsightsMiddleware } from './utils/azureAppInsights'
+import { telemetryUserAttributesMiddleware } from './utils/azureAppInsights'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
@@ -39,7 +39,6 @@ export default function createApp(services: Services): express.Application {
   app.set('port', process.env.PORT || 3000)
 
   app.use(sentryMiddleware())
-  app.use(appInsightsMiddleware())
   app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
@@ -73,6 +72,7 @@ export default function createApp(services: Services): express.Application {
     }),
   )
   app.use(setUpCurrentUser())
+  app.use(telemetryUserAttributesMiddleware())
   app.use(populateValidationErrors())
   app.use(setUpSuccessNotificationBanner())
   app.use(routes(services))

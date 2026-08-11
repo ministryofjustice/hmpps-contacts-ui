@@ -1,6 +1,5 @@
-import AuditService from './auditService'
-import { AuditEvent } from '../data/hmppsAuditClient'
-import { SanitisedError } from '../sanitisedError'
+import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
+import AuditService, { AuditEvent } from './auditService'
 
 export default class AuditedService {
   constructor(protected readonly auditService: AuditService) {}
@@ -16,7 +15,9 @@ export default class AuditedService {
         what: `FAILURE_${event.what}`,
         details: {
           ...(event.details ?? {}),
-          statusCode: (ex as SanitisedError).status,
+          // API clients throw SanitisedError (.responseStatus), but fall back to .status too, matching
+          // errorHandler.ts's pattern, in case an http-errors-style error reaches here from elsewhere.
+          statusCode: (ex as SanitisedError & { status?: number }).responseStatus ?? (ex as { status?: number }).status,
         },
       })
       throw ex

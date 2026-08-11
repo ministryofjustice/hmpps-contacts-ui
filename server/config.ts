@@ -1,3 +1,5 @@
+import { AgentConfig } from '@ministryofjustice/hmpps-rest-client'
+
 const production = process.env.NODE_ENV === 'production'
 
 function get<T>(name: string, fallback: T, options = { requireInProduction: false }): T | string {
@@ -11,28 +13,6 @@ function get<T>(name: string, fallback: T, options = { requireInProduction: fals
 }
 
 const requiredInProduction = { requireInProduction: true }
-
-export class AgentConfig {
-  // Sets the working socket to timeout after timeout milliseconds of inactivity on the working socket.
-  timeout: number
-
-  constructor(timeout = 8000) {
-    this.timeout = timeout
-  }
-}
-
-export interface ApiConfig {
-  url: string
-  timeout: {
-    // sets maximum time to wait for the first byte to arrive from the server, but it does not limit how long the
-    // entire download can take.
-    response: number
-    // sets a deadline for the entire request (including all uploads, redirects, server processing time) to complete.
-    // If the response isn't fully downloaded within that time, the request will be aborted.
-    deadline: number
-  }
-  agent: AgentConfig
-}
 
 const auditConfig = () => {
   const auditEnabled = get('AUDIT_ENABLED', 'false') === 'true'
@@ -75,8 +55,8 @@ export default {
         deadline: Number(get('HMPPS_AUTH_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),
-      signInClientId: get('SIGN_IN_CLIENT_ID', 'clientid', requiredInProduction),
-      signInClientSecret: get('SIGN_IN_CLIENT_SECRET', 'clientsecret', requiredInProduction),
+      authClientId: get('SIGN_IN_CLIENT_ID', 'clientid', requiredInProduction),
+      authClientSecret: get('SIGN_IN_CLIENT_SECRET', 'clientsecret', requiredInProduction),
       systemClientId: get('SYSTEM_CLIENT_ID', 'clientid', requiredInProduction),
       systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
     },
@@ -158,7 +138,7 @@ export default {
   sqs: {
     audit: auditConfig(),
   },
-  domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   sentry: {
     dsn: process.env['SENTRY_DSN'],

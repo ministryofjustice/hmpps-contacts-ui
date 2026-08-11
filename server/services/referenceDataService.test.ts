@@ -12,7 +12,7 @@ describe('referenceDataService', () => {
   let apiClient: jest.Mocked<ContactsApiClient>
   let service: ReferenceDataService
   beforeEach(() => {
-    apiClient = new ContactsApiClient() as jest.Mocked<ContactsApiClient>
+    apiClient = new ContactsApiClient(undefined as never) as jest.Mocked<ContactsApiClient>
     service = new ReferenceDataService(apiClient)
   })
 
@@ -29,7 +29,7 @@ describe('referenceDataService', () => {
 
       // Then
       expect(created).toStrictEqual(STUBBED_TITLE_OPTIONS)
-      expect(apiClient.getReferenceCodes).toHaveBeenCalledWith(ReferenceCodeType.TITLE, user)
+      expect(apiClient.getReferenceCodes).toHaveBeenCalledWith(ReferenceCodeType.TITLE, user.username)
     })
 
     it('should cache reference data', async () => {
@@ -62,7 +62,7 @@ describe('referenceDataService', () => {
 
       // Then
       expect(created).toStrictEqual('Mr')
-      expect(apiClient.getReferenceCodes).toHaveBeenCalledWith(ReferenceCodeType.TITLE, user)
+      expect(apiClient.getReferenceCodes).toHaveBeenCalledWith(ReferenceCodeType.TITLE, user.username)
     })
 
     it('should get return empty if no matching code', async () => {
@@ -74,7 +74,7 @@ describe('referenceDataService', () => {
 
       // Then
       expect(created).toStrictEqual('')
-      expect(apiClient.getReferenceCodes).toHaveBeenCalledWith(ReferenceCodeType.TITLE, user)
+      expect(apiClient.getReferenceCodes).toHaveBeenCalledWith(ReferenceCodeType.TITLE, user.username)
     })
 
     it('should handle a bad request', async () => {

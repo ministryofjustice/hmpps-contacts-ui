@@ -265,7 +265,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   })
 
   it('should return to input page with details kept if there is an API duplicate record (409) response', async () => {
-    contactsService.updateContactIdentity.mockRejectedValue(new Conflict())
+    contactsService.updateContactIdentity.mockRejectedValue(Object.assign(new Conflict(), { responseStatus: 409 }))
     contactsService.getContactName.mockResolvedValue(TestData.contactName())
 
     await request(app)
@@ -295,7 +295,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   })
 
   it('should throw any other API errors', async () => {
-    contactsService.updateContactIdentity.mockRejectedValue(new InternalServerError())
+    contactsService.updateContactIdentity.mockRejectedValue(
+      Object.assign(new InternalServerError(), { responseStatus: 500 }),
+    )
     contactsService.getContactName.mockResolvedValue(TestData.contactName())
 
     await request(app)

@@ -1,11 +1,14 @@
 import { Router } from 'express'
+import { VerificationClient } from '@ministryofjustice/hmpps-auth-clients'
 import auth from '../authentication/auth'
-import tokenVerifier from '../data/tokenVerification'
 import populateCurrentUser from './populateCurrentUser'
+import config from '../config'
+import logger from '../../logger'
 
 export default function setUpCurrentUser(): Router {
   const router = Router({ mergeParams: true })
-  router.use(auth.authenticationMiddleware(tokenVerifier))
+  const verificationClient = new VerificationClient(config.apis.tokenVerification, logger)
+  router.use(auth.authenticationMiddleware(request => verificationClient.verifyToken(request)))
   router.use(populateCurrentUser())
   return router
 }

@@ -55,7 +55,7 @@ const MyRoutes = (serviceA: ServiceA, serviceB: ServiceB) => {
 ```
 
 ### API Clients
-Extend `RestClient` from `server/data/restClient.ts`. Pass `name` and `ApiConfig` to `super()`. Use `Client.SYSTEM_TOKEN` (default) or `Client.USER_TOKEN`.
+Extend `RestClient` from `@ministryofjustice/hmpps-rest-client`. Constructor takes `(name, config.apis.<api>, logger, authenticationClient)`. Pass `asSystem(user.username)` (system-token calls) or `asUser(user.token)` as the second argument to `get`/`post`/`put`/`patch`/`delete` calls — the old `Client.SYSTEM_TOKEN`/`Client.USER_TOKEN` enum is gone. Auth token acquisition/verification/storage comes from `@ministryofjustice/hmpps-auth-clients` (`AuthenticationClient`, `VerificationClient`, `RedisTokenStore`/`InMemoryTokenStore`), wired once in `server/data/index.ts` and shared across clients/services (don't construct a second `AuthenticationClient` — e.g. `permissionsService` reuses the shared instance).
 
 ### Validation
 Use Zod schemas in `*Schemas.ts` files colocated with the route. The `validate(schema)` middleware runs on POST routes and populates `res.locals.errors`.
@@ -63,11 +63,15 @@ Use Zod schemas in `*Schemas.ts` files colocated with the route. The `validate(s
 ### Enumerations & Permissions
 Use constants from `server/enumeration/` (e.g. `Permission`, `ReferenceCodeType`). Never use magic strings.
 
+### Proxy-awareness & config
+Outbound HTTP goes through `@ministryofjustice/hmpps-rest-client`'s keepalive agents, which honour `HTTP_PROXY`/`HTTPS_PROXY`/`NO_PROXY` (see `helm_deploy/values-dev.yaml`'s `NODE_USE_ENV_PROXY: "1"` and `hmpps-envoy-https-proxy-env` secret) — don't create bespoke `http.Agent`/`https.Agent`/`superagent`/`agentkeepalive` instances outside that library, they'll bypass the Cloud Platform Envoy proxy. `config.ts`'s `AgentConfig`/`ApiConfig` types come from `@ministryofjustice/hmpps-rest-client`, not local definitions. Errors from migrated clients are `SanitisedError` with `.responseStatus` (not `.status`); `errorHandler.ts` checks both shapes since `http-errors`-based errors coexist. `server/utils/azureAppInsights.ts` forces Application Insights onto Node's core proxy-aware agents (`NODE_USE_ENV_PROXY`-driven) because its own proxy handling is rejected by Envoy on Node 24 — don't revert `configureProxyAgents()` when touching telemetry code.
+
 ## Testing
 
 ### Unit Tests
 - Colocated with source: `server/**/*.test.ts`
 - Mock API clients with `jest.mock('../data/myApiClient')` then `jest.Mocked<MyApiClient>`
+- API client tests construct a real `AuthenticationClient`/`InMemoryTokenStore` from `@ministryofjustice/hmpps-auth-clients` (not a local adapter) and stub the actual HTTP calls with `nock`
 - Mock HTTP calls with `nock`. For endpoints that retry (GET, DELETE), set up 3 nock interceptors when testing error paths
 - Mock `node:fs` as `jest.mock('node:fs', () => ({ createReadStream: jest.fn() }))` when testing code that reads files
 
