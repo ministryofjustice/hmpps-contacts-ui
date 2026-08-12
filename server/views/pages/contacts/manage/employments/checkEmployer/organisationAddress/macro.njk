@@ -82,7 +82,7 @@
       text: "Contact person"
     },
     value: {
-      text: params.address.contactPersonName or "Not provided"
+      text: (params.address.contactPersonName or "Not provided")
     }
     },
     {
@@ -90,7 +90,7 @@
       text: "Business hours"
     },
       value: {
-      html: params.address.businessHours or "Not provided"
+      text: params.address.businessHours or "Not provided"
     }
     },
     {
