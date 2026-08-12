@@ -19,7 +19,7 @@
          text: "Type"
        },
          value: {
-         html: address.addressTypeDescription or 'Not provided',
+         html: address.addressTypeDescription or 'Not provided' | escape,
          classes: 'check-answers-type-value'
        },
          actions: {
@@ -79,7 +79,7 @@
          text: "Primary or postal address"
        },
          value: {
-         html: address | formatPrimaryOrPostal or 'Not provided',
+         html: address | formatPrimaryOrPostal or 'Not provided' | escape,
          classes: 'check-answers-flags-value'
        },
          actions: {

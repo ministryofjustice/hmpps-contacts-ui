@@ -20,7 +20,7 @@
                                 text: "Document type"
                             },
                             value: {
-                                html: identityDocument.identityTypeDescription,
+                                html: identityDocument.identityTypeDescription | escape,
                                 classes: 'type-value'
                             }
                         },
@@ -29,7 +29,7 @@
                               text: "Document number"
                             },
                               value: {
-                                html: identityDocument.identityValue,
+                                html: identityDocument.identityValue | escape,
                                 classes: 'identity-number-value'
                               }
                         },
@@ -38,7 +38,7 @@
                                 text: "Issuing authority"
                             },
                             value: {
-                                html: identityDocument.issuingAuthority or 'Not provided',
+                                html: (identityDocument.issuingAuthority or 'Not provided') | escape,
                                 classes: 'issuing-authority-value'
                             }
                         }

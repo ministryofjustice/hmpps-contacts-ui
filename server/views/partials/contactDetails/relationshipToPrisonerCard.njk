@@ -139,7 +139,7 @@
       },
       {
           key: {
-            html: 'Visits approval recorded by'
+            text: 'Visits approval recorded by'
           },
           value: {
             text: relationship.approvedBy
@@ -150,7 +150,7 @@
           text: 'Comments on the relationship'
         },
         value: {
-          text: (relationship.comments or 'Not provided') | escape | nl2br
+          html: (relationship.comments or 'Not provided') | escape | nl2br
         },
         actions: {
           items: [
