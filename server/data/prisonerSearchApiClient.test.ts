@@ -1,7 +1,7 @@
 import nock from 'nock'
 
+import { AuthenticationClient, InMemoryTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
-import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
 import TestData from '../routes/testutils/testData'
 
@@ -15,7 +15,7 @@ describe('Prisoner search', () => {
 
   beforeEach(() => {
     fakePrisonerSearchApi = nock(config.apis.prisonerSearchApi.url)
-    prisonerSearchApiClient = new PrisonerSearchApiClient()
+    prisonerSearchApiClient = new PrisonerSearchApiClient(new AuthenticationClient(config.apis.hmppsAuth, console))
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 
@@ -38,7 +38,7 @@ describe('Prisoner search', () => {
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, prisoner)
 
-      const output = await prisonerSearchApiClient.getByPrisonerNumber('A1234BC', user)
+      const output = await prisonerSearchApiClient.getByPrisonerNumber('A1234BC', user.username)
 
       expect(output).toEqual(prisoner)
     })

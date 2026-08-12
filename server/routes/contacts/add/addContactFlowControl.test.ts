@@ -480,9 +480,7 @@ describe('addContactFlowControl', () => {
             isCheckingAnswers: false,
             possibleExistingRecords: [],
             isPossibleExistingRecordMatched: option as
-              | 'YES'
-              | 'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS'
-              | 'NO_CONTINUE_ADDING_CONTACT',
+              'YES' | 'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS' | 'NO_CONTINUE_ADDING_CONTACT',
           }
 
           const page = nextPageForAddContactJourney(

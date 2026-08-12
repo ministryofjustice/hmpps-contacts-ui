@@ -35,7 +35,7 @@ describe('restrictionsService', () => {
   }
 
   beforeEach(() => {
-    apiClient = new ContactsApiClient() as jest.Mocked<ContactsApiClient>
+    apiClient = new ContactsApiClient(undefined as never) as jest.Mocked<ContactsApiClient>
     service = new RestrictionsService(apiClient, auditService)
   })
 
@@ -59,7 +59,7 @@ describe('restrictionsService', () => {
         startDate: '2009-02-01',
       }
       expect(created).toStrictEqual(expectedResponse)
-      expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user)
+      expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user.username)
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_POST_CONTACT_RESTRICTION',
         who: 'user1',
@@ -87,7 +87,7 @@ describe('restrictionsService', () => {
         comments: 'Some comments',
       }
       expect(created).toStrictEqual(expectedResponse)
-      expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user)
+      expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user.username)
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_POST_CONTACT_RESTRICTION',
         who: 'user1',
@@ -98,7 +98,9 @@ describe('restrictionsService', () => {
     })
 
     it('should handle a bad request creating global restriction', async () => {
-      apiClient.createContactGlobalRestriction.mockRejectedValue(createError.BadRequest())
+      apiClient.createContactGlobalRestriction.mockRejectedValue(
+        Object.assign(createError.BadRequest(), { responseStatus: 400 }),
+      )
       journey.restrictionClass = 'CONTACT_GLOBAL'
       journey.restriction = { type: 'BAN', startDate: '1/2/2009' }
       await expect(service.createRestriction(journey, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
@@ -129,7 +131,7 @@ describe('restrictionsService', () => {
         startDate: '2009-02-01',
       }
       expect(created).toStrictEqual(expectedResponse)
-      expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user)
+      expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user.username)
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_POST_CONTACT_RELATIONSHIP_RESTRICTION',
         who: 'user1',
@@ -166,7 +168,7 @@ describe('restrictionsService', () => {
         comments: 'Some comments',
       }
       expect(created).toStrictEqual(expectedResponse)
-      expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user)
+      expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user.username)
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_POST_CONTACT_RELATIONSHIP_RESTRICTION',
         who: 'user1',
@@ -184,7 +186,9 @@ describe('restrictionsService', () => {
     })
 
     it('should handle a bad request creating prisoner-contact restriction', async () => {
-      apiClient.createPrisonerContactRestriction.mockRejectedValue(createError.BadRequest())
+      apiClient.createPrisonerContactRestriction.mockRejectedValue(
+        Object.assign(createError.BadRequest(), { responseStatus: 400 }),
+      )
       journey.restrictionClass = 'PRISONER_CONTACT'
       journey.restriction = { type: 'BAN', startDate: '1/2/2009' }
       await expect(service.createRestriction(journey, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
@@ -239,7 +243,7 @@ describe('restrictionsService', () => {
         contactId,
         restrictionId,
         expectedRequest,
-        user,
+        user.username,
       )
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_PUT_CONTACT_RESTRICTION',
@@ -288,7 +292,7 @@ describe('restrictionsService', () => {
         contactId,
         restrictionId,
         expectedRequest,
-        user,
+        user.username,
       )
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_PUT_CONTACT_RESTRICTION',
@@ -313,7 +317,9 @@ describe('restrictionsService', () => {
         comments: undefined,
       }
 
-      apiClient.updateContactGlobalRestriction.mockRejectedValue(createError.BadRequest())
+      apiClient.updateContactGlobalRestriction.mockRejectedValue(
+        Object.assign(createError.BadRequest(), { responseStatus: 400 }),
+      )
       await expect(
         service.updateContactGlobalRestriction(contactId, restrictionId, form, user, 'correlationId'),
       ).rejects.toBeInstanceOf(BadRequest)
@@ -369,7 +375,7 @@ describe('restrictionsService', () => {
         contactId,
         restrictionId,
         expectedRequest,
-        user,
+        user.username,
       )
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_PUT_CONTACT_RELATIONSHIP_RESTRICTION',
@@ -420,7 +426,7 @@ describe('restrictionsService', () => {
         contactId,
         restrictionId,
         expectedRequest,
-        user,
+        user.username,
       )
       expect(auditService.logAuditEvent).toHaveBeenCalledWith({
         what: 'API_PUT_CONTACT_RELATIONSHIP_RESTRICTION',
@@ -445,7 +451,9 @@ describe('restrictionsService', () => {
         comments: undefined,
       }
 
-      apiClient.updatePrisonerContactRestriction.mockRejectedValue(createError.BadRequest())
+      apiClient.updatePrisonerContactRestriction.mockRejectedValue(
+        Object.assign(createError.BadRequest(), { responseStatus: 400 }),
+      )
       await expect(
         service.updatePrisonerContactRestriction(contactId, restrictionId, form, user, 'correlationId'),
       ).rejects.toBeInstanceOf(BadRequest)
@@ -505,7 +513,7 @@ describe('restrictionsService', () => {
       const result = await service.getGlobalRestrictions(expectedContact, user)
 
       // Assert
-      expect(apiClient.getGlobalContactRestrictions).toHaveBeenCalledWith(contactId, user)
+      expect(apiClient.getGlobalContactRestrictions).toHaveBeenCalledWith(contactId, user.username)
 
       expect(result).toEqual([
         {
@@ -552,7 +560,7 @@ describe('restrictionsService', () => {
       const result = await service.getRelationshipAndGlobalRestrictions(prisonerContactId, user)
 
       // Assert
-      expect(apiClient.getPrisonerContactRestrictions).toHaveBeenCalledWith(prisonerContactId, user)
+      expect(apiClient.getPrisonerContactRestrictions).toHaveBeenCalledWith(prisonerContactId, user.username)
 
       expect(result).toEqual({
         prisonerContactRestrictions: [

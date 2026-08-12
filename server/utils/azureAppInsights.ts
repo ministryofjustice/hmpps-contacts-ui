@@ -1,77 +1,38 @@
-import {
-  defaultClient,
-  DistributedTracingModes,
-  getCorrelationContext,
-  setup,
-  TelemetryClient,
-  Contracts,
-} from 'applicationinsights'
-import { Request, RequestHandler } from 'express'
-import { EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
-import type { ApplicationInfo } from '../applicationInfo'
+import { initialiseTelemetry, telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
+import type { RequestHandler } from 'express'
+import applicationInfoSupplier from '../applicationInfo'
 
-export function initialiseAppInsights(): void {
-  if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-    // eslint-disable-next-line no-console
-    console.log('Enabling azure application insights')
+const { applicationName, buildNumber } = applicationInfoSupplier()
 
-    setup().setDistributedTracingMode(DistributedTracingModes.AI_AND_W3C).start()
-  }
-}
+initialiseTelemetry({
+  serviceName: applicationName,
+  serviceVersion: buildNumber,
+  connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+  debug: process.env.DEBUG_TELEMETRY === 'true',
+})
+  .addFilter(telemetry.processors.filterSpanWherePath(['/health', '/ping', '/info', '/assets/*', '/favicon.ico']))
+  .addModifier(telemetry.processors.enrichSpanNameWithHttpRoute())
+  .startRecording()
 
-export function buildAppInsightsClient(
-  { applicationName, buildNumber }: ApplicationInfo,
-  overrideName?: string,
-): TelemetryClient | null {
-  if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-    defaultClient.context.tags['ai.cloud.role'] = overrideName || applicationName
-    defaultClient.context.tags['ai.application.ver'] = buildNumber
-    defaultClient.addTelemetryProcessor(addUserDataToRequests)
-    defaultClient.addTelemetryProcessor(({ tags, data }, contextObjects) => {
-      const operationNameOverride =
-        contextObjects?.['correlationContext']?.customProperties?.getProperty('operationName')
-      if (operationNameOverride) {
-        tags['ai.operation.name'] = operationNameOverride // eslint-disable-line no-param-reassign
-        if (data?.baseData) {
-          data.baseData['name'] = operationNameOverride // eslint-disable-line no-param-reassign
-        }
+/**
+ * Sets the current user's username/active caseload as attributes on the active (HTTP server) span,
+ * replacing the old applicationinsights `addUserDataToRequests` telemetry processor. Must run after
+ * the user (and their active caseload) has been populated onto res.locals.
+ */
+export function telemetryUserAttributesMiddleware(): RequestHandler {
+  return (_req, res, next) => {
+    const { username, activeCaseLoad } = res.locals.user ?? {}
+    if (username) {
+      const spanAttributes: Record<string, string> = {
+        username,
       }
-      return true
-    })
 
-    return defaultClient
-  }
-  return null
-}
-
-export function appInsightsMiddleware(): RequestHandler {
-  return (req, res, next) => {
-    res.prependOnceListener('finish', () => {
-      const context = getCorrelationContext()
-      if (context && req.route) {
-        context.customProperties.setProperty('operationName', `${req.method} ${req.route?.path}`)
+      if (activeCaseLoad?.caseLoadId) {
+        spanAttributes.activeCaseLoadId = activeCaseLoad.caseLoadId
       }
-    })
+
+      telemetry.setSpanAttributes(spanAttributes)
+    }
     next()
   }
-}
-
-function addUserDataToRequests(envelope: EnvelopeTelemetry, contextObjects: Record<string, unknown> | undefined) {
-  const isRequest = envelope.data.baseType === Contracts.TelemetryTypeString['Request']
-  if (isRequest) {
-    const { username, activeCaseLoad } =
-      (contextObjects?.['http.ServerRequest'] as Request | undefined)?.res?.locals?.user || {}
-    if (username) {
-      const properties = envelope.data.baseData?.['properties']
-      // eslint-disable-next-line no-param-reassign
-      envelope.data.baseData ??= {}
-      // eslint-disable-next-line no-param-reassign
-      envelope.data.baseData['properties'] = {
-        username,
-        activeCaseLoadId: activeCaseLoad?.caseLoadId,
-        ...properties,
-      }
-    }
-  }
-  return true
 }

@@ -1,32 +1,34 @@
-/* eslint-disable import/first */
-/*
- * Do app insights first as it does some magic instrumentation work, i.e. it affects other imports
- * In particular, application insights automatically collects bunyan logs
- */
-import { initialiseAppInsights, buildAppInsightsClient } from '../utils/azureAppInsights'
-import applicationInfoSupplier from '../applicationInfo'
-
-const applicationInfo = applicationInfoSupplier()
-initialiseAppInsights()
-const applicationInsightsClient = buildAppInsightsClient(applicationInfo)
-
+import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
+import { AuditClient } from '@ministryofjustice/hmpps-audit-client'
 import config from '../config'
-import HmppsAuditClient from './hmppsAuditClient'
+import logger from '../../logger'
+import applicationInfoSupplier from '../applicationInfo'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
 import ContactsApiClient from './contactsApiClient'
 import PrisonApiClient from './prisonApiClient'
 import OrganisationsApiClient from './organisationsApiClient'
 import AlertsApiClient from './alertsApiClient'
+import { createRedisClient } from './redisClient'
 
-export const dataAccess = () => ({
-  applicationInfo,
-  hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
-  prisonerSearchApiClient: new PrisonerSearchApiClient(),
-  contactsApiClient: new ContactsApiClient(),
-  alertsApiClient: new AlertsApiClient(),
-  prisonApiClient: new PrisonApiClient(),
-  organisationsApiClient: new OrganisationsApiClient(),
-  applicationInsightsClient,
-})
+const applicationInfo = applicationInfoSupplier()
 
-export { HmppsAuditClient, PrisonerSearchApiClient, ContactsApiClient, PrisonApiClient, OrganisationsApiClient }
+export const dataAccess = () => {
+  const hmppsAuthClient = new AuthenticationClient(
+    config.apis.hmppsAuth,
+    logger,
+    config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore(),
+  )
+
+  return {
+    applicationInfo,
+    hmppsAuthClient,
+    hmppsAuditClient: new AuditClient(config.sqs.audit, logger),
+    prisonerSearchApiClient: new PrisonerSearchApiClient(hmppsAuthClient),
+    contactsApiClient: new ContactsApiClient(hmppsAuthClient),
+    alertsApiClient: new AlertsApiClient(hmppsAuthClient),
+    prisonApiClient: new PrisonApiClient(hmppsAuthClient),
+    organisationsApiClient: new OrganisationsApiClient(hmppsAuthClient),
+  }
+}
+
+export { PrisonerSearchApiClient, ContactsApiClient, PrisonApiClient, OrganisationsApiClient }

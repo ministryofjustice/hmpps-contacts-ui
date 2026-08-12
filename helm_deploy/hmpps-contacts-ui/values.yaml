@@ -35,6 +35,8 @@ generic-service:
     AUDIT_SQS_REGION: "eu-west-2"
     AUDIT_SERVICE_NAME: "hmpps-contacts-ui" # Your audit service name
     CONTACTS_API_REFERENCE_DATA_CACHE_TTL: 300
+    NODE_USE_ENV_PROXY: "1"
+    APPLICATION_INSIGHTS_NO_STATSBEAT: "true"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -61,6 +63,13 @@ generic-service:
       FEATURE_CHANGE_CONTACT_NAME_ENABLE_DATE: "FEATURE_CHANGE_CONTACT_NAME_ENABLE_DATE"
     hmpps-contacts-ui-application-insights:
       APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
+    hmpps-envoy-https-proxy-env:
+      HTTP_PROXY: "HTTP_PROXY"
+      HTTPS_PROXY: "HTTPS_PROXY"
+      NO_PROXY: "NO_PROXY"
+      http_proxy: "HTTP_PROXY"
+      https_proxy: "HTTPS_PROXY"
+      no_proxy: "NO_PROXY"
 
   allowlist:
     groups:

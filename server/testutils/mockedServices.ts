@@ -1,3 +1,4 @@
+import { AuditClient } from '@ministryofjustice/hmpps-audit-client'
 import AuditService from '../services/auditService'
 import ReferenceDataService from '../services/referenceDataService'
 import PrisonerSearchService from '../services/prisonerSearchService'
@@ -8,11 +9,11 @@ import TelemetryService from '../services/telemetryService'
 import AlertsService from '../services/alertsService'
 import RestrictionsTestData from '../routes/testutils/stubRestrictionsData'
 import ContactAuditHistoryService from '../services/contactAuditHistoryService'
-import { ContactsApiClient, HmppsAuditClient, OrganisationsApiClient, PrisonerSearchApiClient } from '../data'
+import { ContactsApiClient, OrganisationsApiClient, PrisonerSearchApiClient } from '../data'
 import AlertsApiClient from '../data/alertsApiClient'
 
 export const MockedService = {
-  AuditService: () => new AuditService({} as HmppsAuditClient) as jest.Mocked<AuditService>,
+  AuditService: () => new AuditService({} as AuditClient) as jest.Mocked<AuditService>,
   ReferenceDataService: () => new ReferenceDataService({} as ContactsApiClient) as jest.Mocked<ReferenceDataService>,
   PrisonerSearchService: () =>
     new PrisonerSearchService({} as PrisonerSearchApiClient) as jest.Mocked<PrisonerSearchService>,
@@ -52,7 +53,7 @@ export const MockedService = {
   },
   OrganisationsService: () =>
     new OrganisationsService({} as OrganisationsApiClient) as jest.Mocked<OrganisationsService>,
-  TelemetryService: () => new TelemetryService(null) as jest.Mocked<TelemetryService>,
+  TelemetryService: () => new TelemetryService() as jest.Mocked<TelemetryService>,
   AlertsService: (): jest.Mocked<AlertsService> => {
     const service = new AlertsService({} as AlertsApiClient, {} as AuditService) as jest.Mocked<AlertsService>
 

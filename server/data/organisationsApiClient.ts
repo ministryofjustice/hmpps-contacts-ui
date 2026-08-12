@@ -1,5 +1,6 @@
+import { RestClient, asSystem, type AuthenticationClient } from '@ministryofjustice/hmpps-rest-client'
 import config from '../config'
-import RestClient from './restClient'
+import logger from '../../logger'
 import {
   OrganisationDetails,
   OrganisationSummary,
@@ -7,8 +8,8 @@ import {
 } from '../@types/organisationsApiClient'
 
 export default class OrganisationsApiClient extends RestClient {
-  constructor() {
-    super('Organisations API client', config.apis.organisationsApi)
+  constructor(authenticationClient: AuthenticationClient) {
+    super('Organisations API client', config.apis.organisationsApi, logger, authenticationClient)
   }
 
   async searchOrganisations(
@@ -23,22 +24,22 @@ export default class OrganisationsApiClient extends RestClient {
       size: number
       sort: string[]
     },
-    user: Express.User,
+    username: string,
   ): Promise<PagedModelOrganisationSummary> {
     const name = encodeURIComponent(searchTerm)
     return this.get<PagedModelOrganisationSummary>(
       {
         path: `/organisation/search?name=${name}&page=${page}&size=${size}${sort.map(itm => `&sort=${encodeURIComponent(itm)}`).join('')}`,
       },
-      user,
+      asSystem(username),
     )
   }
 
-  async getOrganisation(organisationId: number, user: Express.User): Promise<OrganisationDetails> {
-    return this.get<OrganisationDetails>({ path: `/organisation/${organisationId}` }, user)
+  async getOrganisation(organisationId: number, username: string): Promise<OrganisationDetails> {
+    return this.get<OrganisationDetails>({ path: `/organisation/${organisationId}` }, asSystem(username))
   }
 
-  async getOrganisationSummary(organisationId: number, user: Express.User): Promise<OrganisationSummary> {
-    return this.get<OrganisationSummary>({ path: `/organisation/${organisationId}/summary` }, user)
+  async getOrganisationSummary(organisationId: number, username: string): Promise<OrganisationSummary> {
+    return this.get<OrganisationSummary>({ path: `/organisation/${organisationId}/summary` }, asSystem(username))
   }
 }

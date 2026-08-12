@@ -1,13 +1,14 @@
-import RestClient from './restClient'
-import config, { ApiConfig } from '../config'
+import { RestClient, asSystem, type AuthenticationClient } from '@ministryofjustice/hmpps-rest-client'
+import config from '../config'
 import { PageAlert } from './alertsApiTypes'
+import logger from '../../logger'
 
 export default class AlertsApiClient extends RestClient {
-  constructor() {
-    super('alertsApiClient', config.apis.alertsApi as ApiConfig)
+  constructor(authenticationClient: AuthenticationClient) {
+    super('alertsApiClient', config.apis.alertsApi, logger, authenticationClient)
   }
 
-  async getAllAlerts(prisonerNumber: string, user: Express.User): Promise<PageAlert> {
-    return this.get({ path: `/prisoners/${prisonerNumber}/alerts` }, user)
+  async getAllAlerts(prisonerNumber: string, username: string): Promise<PageAlert> {
+    return this.get({ path: `/prisoners/${prisonerNumber}/alerts` }, asSystem(username))
   }
 }

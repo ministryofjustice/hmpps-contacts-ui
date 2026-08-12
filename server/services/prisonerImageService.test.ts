@@ -11,7 +11,7 @@ describe('Prisoner image service', () => {
   let prisonerImageService: PrisonerImageService
 
   beforeEach(() => {
-    prisonApiClient = new PrisonApiClient() as jest.Mocked<PrisonApiClient>
+    prisonApiClient = new PrisonApiClient(undefined as never) as jest.Mocked<PrisonApiClient>
     prisonerImageService = new PrisonerImageService(prisonApiClient)
   })
 
@@ -23,7 +23,7 @@ describe('Prisoner image service', () => {
     it('should get the prisoner image', async () => {
       prisonApiClient.getImage.mockResolvedValue(Readable.from('image'))
       await prisonerImageService.getImage('ABC123', user)
-      expect(prisonApiClient.getImage).toHaveBeenCalledWith('ABC123', user)
+      expect(prisonApiClient.getImage).toHaveBeenCalledWith('ABC123', user.username)
     })
   })
 })
