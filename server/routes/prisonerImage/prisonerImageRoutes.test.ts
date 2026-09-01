@@ -4,16 +4,19 @@ import { Readable } from 'stream'
 import { appWithAllRoutes, basicPrisonUser } from '../testutils/appSetup'
 import PrisonerImageService from '../../services/prisonerImageService'
 import { PrisonApiClient } from '../../data'
+import { MockedService } from '../../testutils/mockedServices'
 
 jest.mock('../../services/prisonerImageService')
+jest.mock('../../services/auditService')
 
 const prisonerImageService = new PrisonerImageService({} as PrisonApiClient) as jest.Mocked<PrisonerImageService>
+const auditService = MockedService.AuditService()
 
 let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { prisonerImageService },
+    services: { prisonerImageService, auditService },
     userSupplier: () => basicPrisonUser,
   })
 })
