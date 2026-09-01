@@ -6,7 +6,6 @@ import PrisonerImageService from '../../services/prisonerImageService'
 import { PrisonApiClient } from '../../data'
 
 jest.mock('../../services/prisonerImageService')
-jest.mock('../../services/AuditService')
 
 const prisonerImageService = new PrisonerImageService({} as PrisonApiClient) as jest.Mocked<PrisonerImageService>
 
