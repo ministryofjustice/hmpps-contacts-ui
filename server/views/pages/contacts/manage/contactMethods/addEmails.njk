@@ -61,17 +61,17 @@
           items: items
         }) }}
         <div class="govuk-button-group">
-            {{ govukButton({
-              text: continueButtonLabel,
-              name: "save",
-              type: "submit",
-              classes: 'govuk-!-margin-top-6',
-              attributes: {"data-qa": "continue-button"},
-              preventDoubleClick: true
-            }) }}
-            {% if navigation.cancelButton %}
-            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
-            {% endif %}
+          {{ govukButton({
+            text: continueButtonLabel,
+            name: "save",
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          {% if navigation.cancelButton %}
+          <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+          {% endif %}
         </div>
       </form>
     </div>
