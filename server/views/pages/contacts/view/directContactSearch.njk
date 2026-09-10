@@ -31,6 +31,7 @@
                 <h2 class="govuk-heading-m">Search by contact name</h2>
                 <form class="contact-search" method='POST'>
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    <div class="search-boxes">
                     {{ govukInput({
                         classes: "moj-search__input",
                         id: "firstName",
@@ -57,11 +58,12 @@
                         label: { text: "Last name" },
                         value: lastName
                     }) }}
+                    </div>
 
                     {{ govukDetails({
                         summaryText: "Show advanced options",
                         open: ((sort is defined and sort != 'lastName,asc') or (searchType is defined and searchType != 'PARTIAL') or contactId or day or month or year),
-                        classes: "no-left-border-details",
+                        classes: "no-left-border-details govuk-!-margin-top-6",
                         html:
                         govukSelect({
                             id: "sort",
