@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
+{%- from "moj/components/search/macro.njk" import mojSearch -%}
 {% from "partials/simplePagination/macro.njk" import simplePagination %}
 
 {% extends "partials/layout.njk" %}§
@@ -31,26 +32,28 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <div class="block-background govuk-!-padding-6 govuk-!-margin-bottom-7">
-        <div class="moj-search govuk-!-width-two-thirds">
+        <div class="govuk-!-width-two-thirds">
           <h2 class="govuk-heading-m">Search</h2>
-          <form method="POST">
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            {{ govukInput({
-              classes: "moj-search__input",
+          {{ mojSearch({
+            action: "#",
+            method: "POST",
+            input: {
               id: "organisationName",
               name: "organisationName",
-              value: organisationName or '',
-              label: {
-                text: 'Name of organisation'
-              }
-            }) }}
-
-            {{ govukButton({
-              classes: "moj-search__button",
+              value: organisationName or ''
+            },
+            label: {
+              text: "Name of organisation"
+            },
+            button: {
               text: "Search",
               preventDoubleClick: true
-            }) }}
-          </form>
+            },
+            csrf: {
+              name: "_csrf",
+              value: csrfToken
+            }
+          }) }}
         </div>
       </div>
       {% if organisationName === undefined %}

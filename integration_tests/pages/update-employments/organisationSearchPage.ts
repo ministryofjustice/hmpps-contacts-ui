@@ -6,7 +6,7 @@ export default class OrganisationSearchPage extends Page {
   }
 
   searchTerm() {
-    return cy.findByRole('textbox', { name: /Name of organisation/ })
+    return cy.findByRole('searchbox', { name: /Name of organisation/ })
   }
 
   clickSearch() {

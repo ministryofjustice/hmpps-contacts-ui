@@ -224,3 +224,13 @@ div.moj-action-bar__filter::after { content: none !important; }
   left: 0;
   width: 100vw;
 }
+
+.search-boxes {
+  display: flex;
+  justify-content: space-between;
+  gap: govuk-spacing(2);
+
+  .govuk-form-group {
+    flex-grow: 1;
+  }
+}
