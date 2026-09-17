@@ -71,7 +71,12 @@
   {% endset %}
   {% set item = {
       fieldset: {
-        html: itemHtml
+        html: itemHtml,
+        legend: {
+          text: "Phone number",
+          classes: "moj-add-another__title govuk-fieldset__legend--m",
+          isPageHeading: false
+        }
       }
     }
   %}
