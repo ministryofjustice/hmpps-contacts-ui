@@ -51,7 +51,7 @@ export default class AddAddressPhonesPage extends Page {
   }
 
   clickRemoveButton(index: number) {
-    cy.findAllByRole('button', { name: 'Remove' }).eq(index).click()
+    cy.findAllByRole('button', { name: `Remove phone number ${index + 1}` }).click()
     return this
   }
 

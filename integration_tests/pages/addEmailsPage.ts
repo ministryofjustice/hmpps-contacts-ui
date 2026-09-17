@@ -16,7 +16,7 @@ export default class AddEmailsPage extends Page {
   }
 
   clickRemoveButton(index: number): AddEmailsPage {
-    cy.findAllByRole('button', { name: 'Remove' }).eq(index).click()
+    cy.findAllByRole('button', { name: `Remove email address ${index + 1}` }).click()
     return this
   }
 
