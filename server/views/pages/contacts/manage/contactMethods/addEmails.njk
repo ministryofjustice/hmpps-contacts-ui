@@ -25,6 +25,7 @@
       id: "emails[" + loop.index0 + "].emailAddress",
       name: "emails[" + loop.index0 + "][emailAddress]",
       label: { text: "Email address" },
+      classes: "govuk-input--width-20",
       value: email.emailAddress,
       errorMessage: validationErrors | findError('emails[' + loop.index0 + '].emailAddress'),
       attributes: {
