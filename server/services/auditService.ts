@@ -24,7 +24,7 @@ export interface AuditEvent {
   subjectId?: string
   subjectType?: ContactsSubjectType
   correlationId?: string
-  details?: object
+  details?: Record<string, unknown>
 }
 
 export enum Page {
@@ -157,7 +157,7 @@ export interface PageViewEventDetails {
   subjectId?: string
   subjectType?: ContactsSubjectType
   correlationId?: string
-  details?: object
+  details?: Record<string, unknown>
 }
 
 export default class AuditService {
@@ -165,7 +165,7 @@ export default class AuditService {
 
   async logAuditEvent(event: AuditEvent) {
     await this.hmppsAuditClient.sendMessage<ContactsSubjectType>({
-      action: event.what,
+      what: event.what,
       who: event.who,
       subjectId: event.subjectId,
       subjectType: event.subjectType ?? 'NOT_APPLICABLE',
