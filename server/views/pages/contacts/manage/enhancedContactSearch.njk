@@ -72,22 +72,8 @@
                         classes: "no-left-border-details govuk-!-margin-top-6",
                         html:
                         govukSelect({
-                            id: "sort",
-                            name: "sort",
-                            label: {
-                                text: "Sort by"
-                            },
-                            items: [
-                                { value: "lastName,asc", text: "Last name (A–Z)", selected: (sort == 'lastName,asc') },
-                                { value: "lastName,desc", text: "Last name (Z–A)" , selected: (sort == 'lastName,desc') },
-                                { value: "dateOfBirth,asc", text: "Date of birth (oldest first)" , selected: (sort == 'dateOfBirth,asc') },
-                                { value: "dateOfBirth,desc", text: "Date of birth (youngest first)" , selected: (sort == 'dateOfBirth,desc') }
-                            ]
-                        }) +
-
-                        govukSelect({
                             id: "searchType",
-                            classes: "govuk-!-margin-top-6",
+                            classes: "govuk-!-margin-bottom-6",
                             name: "searchType",
                             label: {
                                 text: "Search type"
@@ -106,7 +92,7 @@
                             label: {
                                 text: "Search by contact ID"
                             },
-                            classes: "govuk-!-margin-top-6 govuk-!-width-one-third",
+                            classes: "govuk-!-margin-bottom-6 govuk-!-width-one-third",
                             id: "contactId",
                             name: "contactId",
                             value: contactId
@@ -114,7 +100,7 @@
 
                         validatedDateInput({
                             id: "dob",
-                            classes: "govuk-!-margin-top-6",
+                            classes: "govuk-!-margin-bottom-6",
                             title: {
                                 text: "Date of birth",
                                 isPageHeading: false
@@ -123,7 +109,22 @@
                             day: day,
                             month: month,
                             year: year
-                        })
+                        }) + 
+
+                        govukSelect({
+                            id: "sort",
+                            name: "sort",
+                            label: {
+                                text: "Sort by"
+                            },
+                            items: [
+                                { value: "lastName,asc", text: "Last name (A–Z)", selected: (sort == 'lastName,asc') },
+                                { value: "lastName,desc", text: "Last name (Z–A)" , selected: (sort == 'lastName,desc') },
+                                { value: "dateOfBirth,asc", text: "Date of birth (oldest first)" , selected: (sort == 'dateOfBirth,asc') },
+                                { value: "dateOfBirth,desc", text: "Date of birth (youngest first)" , selected: (sort == 'dateOfBirth,desc') }
+                            ]
+                        }) 
+
                     }) }}
                     <div class="govuk-details govuk-!-margin-top-6 govuk-!-margin-bottom-0">
                         {{ govukButton({
