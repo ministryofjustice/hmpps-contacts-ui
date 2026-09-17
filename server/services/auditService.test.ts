@@ -27,7 +27,7 @@ describe('Audit service', () => {
       })
 
       expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
-        action: 'AUDIT_EVENT',
+        what: 'AUDIT_EVENT',
         who: 'user1',
         subjectId: 'subject123',
         subjectType: 'CONTACT',
@@ -44,7 +44,7 @@ describe('Audit service', () => {
       })
 
       expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
-        action: 'AUDIT_EVENT',
+        what: 'AUDIT_EVENT',
         who: 'user1',
         subjectId: undefined,
         subjectType: 'NOT_APPLICABLE',
@@ -65,7 +65,7 @@ describe('Audit service', () => {
       })
 
       expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
-        action: 'PAGE_VIEW_CONTACTS_HOME_PAGE',
+        what: 'PAGE_VIEW_CONTACTS_HOME_PAGE',
         who: 'user1',
         subjectId: 'subject123',
         subjectType: 'CONTACT',
