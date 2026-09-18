@@ -37,7 +37,7 @@ const stubComponentsMeta = () => {
   return stubFor({
     request: {
       method: 'GET',
-      url: '/components?component=header&component=footer&library=6.3.5',
+      urlPattern: `/components\\?component=header\\&component=footer\\&library=.*`,
     },
     response: {
       status: 200,
