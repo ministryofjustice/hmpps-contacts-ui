@@ -183,7 +183,7 @@ describe('contact search', () => {
       expect(response.status).toEqual(200)
       // Top-level error summary should include the message set by validateRequest
       expect(response.text).toContain('There is a problem')
-      expect(response.text).toContain('Enter a contact’s name, ID, or date of birth')
+      expect(response.text).toContain('Enter a contact’s name, contact ID, or date of birth')
       expect(contactsService.searchContact).not.toHaveBeenCalled()
     })
 
