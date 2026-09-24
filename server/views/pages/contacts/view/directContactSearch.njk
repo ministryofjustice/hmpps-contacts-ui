@@ -60,6 +60,20 @@
                     }) }}
                     </div>
 
+                    {{ govukSelect({
+                        id: "sort",
+                        name: "sort",
+                        label: {
+                            text: "Sort by"
+                        },
+                        items: [
+                            { value: "lastName,asc", text: "Last name (A–Z)", selected: (sort == 'lastName,asc') },
+                            { value: "lastName,desc", text: "Last name (Z–A)" , selected: (sort == 'lastName,desc') },
+                            { value: "dateOfBirth,asc", text: "Date of birth (oldest first)" , selected: (sort == 'dateOfBirth,asc') },
+                            { value: "dateOfBirth,desc", text: "Date of birth (youngest first)" , selected: (sort == 'dateOfBirth,desc') }
+                        ]
+                    }) }}
+
                     {{ govukDetails({
                         summaryText: "Show advanced options",
                         open: ((sort is defined and sort != 'lastName,asc') or (searchType is defined and searchType != 'PARTIAL') or contactId or day or month or year),
@@ -103,20 +117,6 @@
                             day: day,
                             month: month,
                             year: year
-                        }) +
-
-                         govukSelect({
-                            id: "sort",
-                            name: "sort",
-                            label: {
-                                text: "Sort by"
-                            },
-                            items: [
-                                { value: "lastName,asc", text: "Last name (A–Z)", selected: (sort == 'lastName,asc') },
-                                { value: "lastName,desc", text: "Last name (Z–A)" , selected: (sort == 'lastName,desc') },
-                                { value: "dateOfBirth,asc", text: "Date of birth (oldest first)" , selected: (sort == 'dateOfBirth,asc') },
-                                { value: "dateOfBirth,desc", text: "Date of birth (youngest first)" , selected: (sort == 'dateOfBirth,desc') }
-                            ]
                         })
                     }) }}
                     <div class="govuk-details govuk-!-margin-top-6 govuk-!-margin-bottom-0">
