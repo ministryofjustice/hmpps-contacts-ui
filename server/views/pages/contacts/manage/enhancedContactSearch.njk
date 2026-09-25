@@ -82,7 +82,7 @@
 
                     {{ govukDetails({
                         summaryText: "Show advanced options",
-                        open: ((sort is defined and sort != 'lastName,asc') or (searchType is defined and searchType != 'PARTIAL') or contactId or day or month or year),
+                        open: ((searchType is defined and searchType != 'PARTIAL') or contactId or day or month or year),
                         classes: "no-left-border-details govuk-!-margin-top-6",
                         html:
                         govukSelect({
