@@ -171,7 +171,7 @@ export default class ContactsSearchController implements PageHandler {
      * Empty search validation
      * ------------------------- */
     if (search?.contact && !hasName && !hasContactId && !hasDob && !dobError) {
-      addError('search', 'Enter a contact’s name, ID, or date of birth')
+      addError('search', 'Enter a contact’s name, contact ID, or date of birth')
     }
 
     /* -------------------------

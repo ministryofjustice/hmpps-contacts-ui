@@ -13,7 +13,7 @@
   {% if opts.validationErrors %}
     {% set dayError = opts.validationErrors['day'] if opts.validationErrors['day'] else '' %}
     {% set monthError = opts.validationErrors['month'] if opts.validationErrors['month'] else '' %}
-    {% set yearError = opts.validationErrors['year']  if opts.validationErrors['year'] else '' %}
+    {% set yearError = opts.validationErrors['year'] if opts.validationErrors['year'] else '' %}
   {% endif %}
 
   {% macro joinErrors(errors) %}
@@ -32,7 +32,7 @@
     } if title else undefined,
     hint: {
       text: hintText
-    } if hintText else undeinfed,
+    } if hintText else undefined,
     errorMessage: {
       html: '<span id="day-error" class="govuk-error-message">' + joinErrors(dayError) + '</span>
                             <span id="month-error" class="govuk-error-message">' + joinErrors(monthError) + '</span>
