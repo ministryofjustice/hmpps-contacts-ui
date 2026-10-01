@@ -10,7 +10,7 @@ import { HmppsUser } from '../interfaces/hmppsUser'
 
 const router = express.Router()
 
-export default function setUpAuth(): Router {
+export default function setUpAuthentication(): Router {
   auth.init()
 
   router.use(passport.initialize())
