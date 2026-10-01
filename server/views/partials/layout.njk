@@ -41,7 +41,7 @@
     <script nonce="{{ cspNonce }}">
       window.sentryOnLoad = function() {
         Sentry.init({
-          release: "hmpps-alerts-ui@{{ version }}",
+          release: "hmpps-contacts-ui@{{ version }}",
           environment: "{{ sentry.environment }}",
           tracesSampleRate: {{ sentry.tracesSampleRate }},
           replaysSessionSampleRate: {{ sentry.replaySampleRate }},
