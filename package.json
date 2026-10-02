@@ -42,7 +42,6 @@
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
     "@ministryofjustice/hmpps-prison-permissions-lib": "4.3.0",
     "@ministryofjustice/hmpps-rest-client": "^2.2.0",
-    "@sentry/node": "^10.75.0",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
     "bunyan": "^1.8.15",
