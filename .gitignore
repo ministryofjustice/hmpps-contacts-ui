@@ -115,12 +115,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# Sentry Config File
-.sentryclirc
 **/.DS_Store
-
-# Sentry Config File
-.env.sentry-build-plugin
 
 .idea
 .vscode
