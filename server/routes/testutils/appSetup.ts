@@ -18,6 +18,7 @@ import { prisonerMock } from './PrisonerMocks'
 export const basicPrisonUser: HmppsUser = {
   name: 'ALL PRISON STAFF',
   userId: 'all_prison_staff_id',
+  userUuid: '11111111-1111-1111-1111-111111111111',
   token: 'token',
   username: 'all_prison_staff',
   displayName: 'All Prison Staff',
@@ -34,6 +35,7 @@ export const readOnlyPermissions: Record<PrisonerPermission, boolean> = { [Permi
 export const adminUser: HmppsUser = {
   name: 'CONTACTS ADMIN',
   userId: 'contacts_admin_id',
+  userUuid: '11111111-1111-1111-1111-111111111111',
   token: 'token',
   username: 'contacts_admin',
   displayName: 'Contacts Admin',
@@ -50,6 +52,7 @@ export const adminUserPermissions: Record<PrisonerPermission, boolean> = {
 export const authorisingUser: HmppsUser = {
   name: 'CONTACTS AUTHORISER',
   userId: 'contacts_authoriser_id',
+  userUuid: '11111111-1111-1111-1111-111111111111',
   token: 'token',
   username: 'contacts_authoriser',
   displayName: 'Contacts Authoriser',
@@ -68,6 +71,7 @@ export const authorisingUserPermissions: Record<PrisonerPermission, boolean> = {
 export const userWithMultipleRoles: HmppsUser = {
   name: 'CONTACTS MULTIPLE ROLES',
   userId: 'contacts_multi_role_user_id',
+  userUuid: '11111111-1111-1111-1111-111111111111',
   token: 'token',
   username: 'contacts_multi_role_user',
   displayName: 'Contacts Multiple Roles',

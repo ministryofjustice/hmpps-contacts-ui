@@ -1,12 +1,8 @@
-import { initialiseTelemetry, telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
-import type { RequestHandler } from 'express'
-import applicationInfoSupplier from '../applicationInfo'
-
-const { applicationName, buildNumber } = applicationInfoSupplier()
+import { initialiseTelemetry, flushTelemetry, telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 
 initialiseTelemetry({
-  serviceName: applicationName,
-  serviceVersion: buildNumber,
+  serviceName: 'hmpps-contacts-ui',
+  serviceVersion: process.env.BUILD_NUMBER || 'unknown',
   connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
   debug: process.env.DEBUG_TELEMETRY === 'true',
 })
@@ -14,25 +10,10 @@ initialiseTelemetry({
   .addModifier(telemetry.processors.enrichSpanNameWithHttpRoute())
   .startRecording()
 
-/**
- * Sets the current user's username/active caseload as attributes on the active (HTTP server) span,
- * replacing the old applicationinsights `addUserDataToRequests` telemetry processor. Must run after
- * the user (and their active caseload) has been populated onto res.locals.
- */
-export function telemetryUserAttributesMiddleware(): RequestHandler {
-  return (_req, res, next) => {
-    const { username, activeCaseLoad } = res.locals.user ?? {}
-    if (username) {
-      const spanAttributes: Record<string, string> = {
-        username,
-      }
-
-      if (activeCaseLoad?.caseLoadId) {
-        spanAttributes.activeCaseLoadId = activeCaseLoad.caseLoadId
-      }
-
-      telemetry.setSpanAttributes(spanAttributes)
-    }
-    next()
-  }
+const shutdown = async () => {
+  await flushTelemetry()
+  process.exit(0)
 }
+
+process.on('SIGTERM', () => shutdown())
+process.on('SIGINT', () => shutdown())

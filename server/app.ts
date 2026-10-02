@@ -1,4 +1,5 @@
-import express from 'express'
+import express, { Request } from 'express'
+import { telemetryMiddleware } from '@ministryofjustice/hmpps-azure-telemetry'
 import createError from 'http-errors'
 import { getFrontendComponents, retrieveCaseLoadData } from '@ministryofjustice/hmpps-connect-dps-components'
 
@@ -6,7 +7,6 @@ import { getFrontendComponents, retrieveCaseLoadData } from '@ministryofjustice/
 import config from './config'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
-import { telemetryUserAttributesMiddleware } from './utils/azureAppInsights'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
@@ -68,7 +68,11 @@ export default function createApp(services: Services): express.Application {
     }),
   )
   app.use(setUpCurrentUser())
-  app.use(telemetryUserAttributesMiddleware())
+  app.use(
+    telemetryMiddleware.addUserMetadataToTelemetry({
+      getAttributes: (req: Request) => ({ username: req.user?.username }),
+    }),
+  )
   app.use(populateValidationErrors())
   app.use(setUpSuccessNotificationBanner())
   app.use(routes(services))
