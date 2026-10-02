@@ -24,7 +24,6 @@ generic-service:
     PRISONER_PROFILE_PAGE_URL: 'https://prisoner-dev.digital.prison.service.justice.gov.uk'
     COMMON_COMPONENTS_ENABLED: true
     ENVIRONMENT_NAME: dev
-    SENTRY_ENVIRONMENT: DEV
     AUDIT_ENABLED: 'true'
 
   allowlist:

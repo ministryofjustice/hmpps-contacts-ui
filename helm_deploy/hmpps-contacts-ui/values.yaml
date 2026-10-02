@@ -56,9 +56,6 @@ generic-service:
     sqs-hmpps-audit-secret:
       AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
       AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
-    contacts-ui-sentry:
-      SENTRY_DSN: "SENTRY_DSN"
-      SENTRY_LOADER_SCRIPT_ID: "SENTRY_LOADER_SCRIPT_ID"
     feature-toggles:
       FEATURE_CHANGE_CONTACT_NAME_ENABLE_DATE: "FEATURE_CHANGE_CONTACT_NAME_ENABLE_DATE"
     hmpps-contacts-ui-application-insights:

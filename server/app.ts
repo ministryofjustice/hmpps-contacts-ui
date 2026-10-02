@@ -1,7 +1,5 @@
 import express, { Request } from 'express'
 import { telemetryMiddleware } from '@ministryofjustice/hmpps-azure-telemetry'
-import * as Sentry from '@sentry/node'
-import './sentry'
 import createError from 'http-errors'
 import { getFrontendComponents, retrieveCaseLoadData } from '@ministryofjustice/hmpps-connect-dps-components'
 
@@ -23,7 +21,6 @@ import type { Services } from './services'
 import AuthorisedRoles from './enumeration/authorisedRoles'
 import populateValidationErrors from './middleware/populateValidationErrors'
 import setUpSuccessNotificationBanner from './middleware/setUpSuccessNotificationBanner'
-import sentryMiddleware from './middleware/sentryMiddleware'
 import logger from '../logger'
 import { auditPageViewMiddleware } from './middleware/auditPageViewMiddleware'
 
@@ -38,7 +35,6 @@ export default function createApp(services: Services): express.Application {
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
-  app.use(sentryMiddleware())
   app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
@@ -80,8 +76,6 @@ export default function createApp(services: Services): express.Application {
   app.use(populateValidationErrors())
   app.use(setUpSuccessNotificationBanner())
   app.use(routes(services))
-
-  if (config.sentry.dsn) Sentry.setupExpressErrorHandler(app)
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
