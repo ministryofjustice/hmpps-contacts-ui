@@ -24,5 +24,4 @@ generic-service:
     AUDIT_ENABLED: 'true'
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps-contacts-ui-non-prod
   businessHoursOnly: true
