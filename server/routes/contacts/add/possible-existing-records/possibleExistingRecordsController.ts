@@ -34,7 +34,7 @@ export default class PossibleExistingRecordsController implements PageHandler {
         lastName: journey.names!.lastName,
         firstName: journey.names!.firstName,
         dateOfBirth: formatDateForApi(journey.dateOfBirth) ?? undefined,
-        previousNames: true,
+        previousNames: false,
         includePrisonerRelationships: prisonerNumber,
         searchType: 'EXACT',
         contactId: journey.contactId ? String(journey.contactId) : undefined,
