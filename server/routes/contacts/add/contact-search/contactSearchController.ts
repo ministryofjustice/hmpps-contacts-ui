@@ -73,7 +73,7 @@ export default class ContactSearchController implements PageHandler {
         firstName: contact.firstName,
         middleNames: contact.middleNames,
         dateOfBirth: formatDateForApi(journey.searchContact.dateOfBirth) ?? undefined,
-        previousNames: true,
+        previousNames: false,
         includePrisonerRelationships: journey.prisonerNumber,
         searchType: journey.searchContact.searchType,
         contactId: journey.searchContact.contactId,
