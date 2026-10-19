@@ -92,7 +92,7 @@
     "cypress": "^15.21.1",
     "cypress-axe": "^1.7.0",
     "cypress-multi-reporters": "^2.0.5",
-    "del": "8.0.1",
+    "del": "9.0.1",
     "domhandler": "^6.0.1",
     "esbuild": "^0.28.2",
     "esbuild-plugin-copy": "^2.1.1",
