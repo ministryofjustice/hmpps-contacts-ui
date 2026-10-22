@@ -31,6 +31,7 @@ let currentUser: HmppsUser
 
 beforeEach(() => {
   currentUser = basicPrisonUser
+  jest.replaceProperty(config.serviceUrls, 'prisonerProfileUrl', 'https://prisoner.example.test')
 
   app = appWithAllRoutes({
     services: {
@@ -55,6 +56,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
+  jest.restoreAllMocks()
 })
 
 // Mini profile displayed on most contacts pages; testing here on
@@ -71,7 +73,12 @@ describe('Prisoner Mini Profile', () => {
         const $ = cheerio.load(res.text)
         expect($('[data-qa=mini-profile-person-profile-link]').text()).toBe('Smith, John')
         expect($('[data-qa=mini-profile-person-profile-link]').attr('href')).toBe(
-          `${config.serviceUrls.digitalPrison}/prisoner/${prisonerNumber}`,
+          `${config.serviceUrls.prisonerProfileUrl}/prisoner/${prisonerNumber}`,
+        )
+        const breadcrumbs = $('[data-qa=breadcrumbs] a')
+        expect(breadcrumbs.eq(0).attr('href')).toBe(config.serviceUrls.digitalPrison)
+        expect(breadcrumbs.eq(1).attr('href')).toBe(
+          `${config.serviceUrls.prisonerProfileUrl}/prisoner/${prisonerNumber}`,
         )
         expect($('[data-qa=mini-profile-prisoner-number]').text()).toBe(prisonerNumber)
         expect($('[data-qa=mini-profile-dob]').text()).toBe('2 April 1975')
