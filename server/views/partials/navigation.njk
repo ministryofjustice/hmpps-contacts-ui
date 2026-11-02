@@ -16,7 +16,7 @@
           {% set breadcrumbs = (breadcrumbs.push(
             {
               text: prisonerDetails | formatNameLastNameFirst(excludeMiddleNames = true),
-              href: digitalPrisonServicesUrl + "/prisoner/" + prisonerDetails.prisonerNumber
+              href: prisonerProfileUrl + "/prisoner/" + prisonerDetails.prisonerNumber
             }
           ), breadcrumbs) %}
         {% elseif breadcrumb === 'CONTACTS_HOME_PAGE' %}
