@@ -1,0 +1,79 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+
+{% if isNewRestriction %}
+  {% set typeOptions = types | referenceCodesToSelect('Select restriction type') | setSelected(type) %}
+  {% set title = 'Add a prisoner restriction' %}
+  {% set buttonText = 'Save restriction' %}
+{% else %}
+  {% set typeOptions = types | referenceCodesToSelect(undefined, true) | setSelected(type) %}
+  {% set title = 'Change a prisoner restriction' %}
+  {% set buttonText = 'Confirm and save' %}
+{% endif %}
+{% set pageTitle = title + ' - Manage prisoner restrictions - DPS' %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Manage prisoner restrictions</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+      <p>
+        <b>Prisoner:</b> <span data-qa="prisoner-name-and-id">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span>
+      </p>
+      <form method="POST" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {{ govukSelect({
+          id: "type",
+          name: "type",
+          label: { text: "Restriction type", classes: "govuk-label--m" },
+          items: typeOptions,
+          errorMessage: validationErrors | findError('type')
+        }) }}
+
+        {{ mojDatePicker({
+          id: "startDate",
+          name: "startDate",
+          label: { text: "Set a start date for the restriction", classes: "govuk-label--m" },
+          hint: { text: "For example, 24/9/2024." },
+          errorMessage: validationErrors | findError('startDate'),
+          value: startDate
+        }) }}
+
+        {{ mojDatePicker({
+          id: "expiryDate",
+          name: "expiryDate",
+          label: { text: "Set an expiry date for the restriction (optional)", classes: "govuk-label--m" },
+          hint: { text: "For example, 24/9/2025." },
+          errorMessage: validationErrors | findError('expiryDate'),
+          value: expiryDate
+        }) }}
+
+        {{ govukCharacterCount({
+          id: "comments",
+          name: "comments",
+          label: { text: "Comment on the restriction (optional)", classes: "govuk-label--m" },
+          classes: "govuk-!-width-three-quarters",
+          errorMessage: validationErrors | findError('comments'),
+          value: comments,
+          maxlength: maxCommentLength
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: buttonText,
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

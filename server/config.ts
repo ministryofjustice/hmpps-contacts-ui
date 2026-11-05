@@ -144,5 +144,9 @@ export default {
   // The number of linked prisoners that will trigger a confirmation page when editing a contact
   linkedPrisonersConfirmationThreshold: Number(get('LINKED_PRISONERS_CONFIRMATION_THRESHOLD', 20)),
 
-  feature: {},
+  feature: {
+    // Allows staff to add, change and delete prisoner restrictions in DPS (synchronised to NOMIS by the Syscon sync service)
+    prisonerRestrictionsMaintenanceEnabled:
+      get('FEATURE_PRISONER_RESTRICTIONS_MAINTENANCE_ENABLED', 'false') === 'true',
+  },
 }

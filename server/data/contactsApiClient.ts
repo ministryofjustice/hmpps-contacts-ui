@@ -26,6 +26,9 @@ import {
   PagedModelLinkedPrisonerDetails,
   PagedModelPrisonerContactSummary,
   PagedModelPrisonerRestrictionDetails,
+  PrisonerRestrictionDetails,
+  CreatePrisonerRestrictionRequest,
+  UpdatePrisonerRestrictionRequest,
   PatchContactAddressRequest,
   PatchContactRequest,
   PatchContactResponse,
@@ -483,6 +486,40 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/prisoner-restrictions/${prisonerNumber}?page=${page}&size=${size}&currentTerm=${currentTerm}&paged=${paged}`,
       },
+      asSystem(username),
+    )
+  }
+
+  async createPrisonerRestriction(
+    prisonerNumber: string,
+    request: CreatePrisonerRestrictionRequest,
+    username: string,
+  ): Promise<PrisonerRestrictionDetails> {
+    return this.post<PrisonerRestrictionDetails>(
+      { path: `/prisoner-restrictions/${prisonerNumber}`, data: request },
+      asSystem(username),
+    )
+  }
+
+  async updatePrisonerRestriction(
+    prisonerNumber: string,
+    prisonerRestrictionId: number,
+    request: UpdatePrisonerRestrictionRequest,
+    username: string,
+  ): Promise<PrisonerRestrictionDetails> {
+    return this.put<PrisonerRestrictionDetails>(
+      { path: `/prisoner-restrictions/${prisonerNumber}/${prisonerRestrictionId}`, data: request },
+      asSystem(username),
+    )
+  }
+
+  async deletePrisonerRestriction(
+    prisonerNumber: string,
+    prisonerRestrictionId: number,
+    username: string,
+  ): Promise<void> {
+    return this.delete(
+      { path: `/prisoner-restrictions/${prisonerNumber}/${prisonerRestrictionId}` },
       asSystem(username),
     )
   }
