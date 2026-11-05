@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { NotFound } from 'http-errors'
 import { Page } from '../../services/auditService'
 import { PageHandler } from '../../interfaces/pageHandler'
 import ContactsService from '../../services/contactsService'
@@ -28,7 +29,7 @@ export default class DeletePrisonerRestrictionController implements PageHandler 
       res.locals.user,
     )
     if (!restriction) {
-      throw new Error(`Couldn't find prisoner restriction ${prisonerRestrictionId} for ${prisonerNumber}`)
+      throw new NotFound(`Couldn't find prisoner restriction ${prisonerRestrictionId} for ${prisonerNumber}`)
     }
     const navigation: Navigation = {
       backLink: Urls.prisonerRestrictions(prisonerNumber),

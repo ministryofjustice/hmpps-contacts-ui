@@ -92,8 +92,10 @@ test.describe('Maintain prisoner restrictions', () => {
   })
 
   test('read only users cannot maintain restrictions', async ({ page }) => {
-    await stubCommon(['PRISON'])
+    await stubCommon(['PRISON', 'CONTACTS_ADMINISTRATOR'])
     await signIn(page, listUrl)
+    await expect(page.getByTestId('prisoner-restrictions-heading')).toBeVisible()
     await expect(page.getByRole('link', { name: 'Add a prisoner restriction' })).toHaveCount(0)
+    await expect(page.getByRole('link', { name: /Change|Delete/ })).toHaveCount(0)
   })
 })

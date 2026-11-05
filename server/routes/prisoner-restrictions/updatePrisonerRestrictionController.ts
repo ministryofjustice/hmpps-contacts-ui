@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { NotFound } from 'http-errors'
 import { Page } from '../../services/auditService'
 import { PageHandler } from '../../interfaces/pageHandler'
 import ReferenceCodeType from '../../enumeration/referenceCodeType'
@@ -38,7 +39,7 @@ export default class UpdatePrisonerRestrictionController implements PageHandler 
       user,
     )
     if (!existing) {
-      throw new Error(`Couldn't find prisoner restriction ${prisonerRestrictionId} for ${prisonerNumber}`)
+      throw new NotFound(`Couldn't find prisoner restriction ${prisonerRestrictionId} for ${prisonerNumber}`)
     }
     const types = await this.referenceDataService.getReferenceData(ReferenceCodeType.RESTRICTION, user)
     const navigation: Navigation = {
