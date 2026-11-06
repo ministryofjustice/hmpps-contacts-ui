@@ -1,5 +1,9 @@
 import { Express, Request, Response } from 'express'
-import { PermissionsService } from '@ministryofjustice/hmpps-prison-permissions-lib'
+import {
+  isGranted,
+  PermissionsService,
+  PrisonerAlertsPermission,
+} from '@ministryofjustice/hmpps-prison-permissions-lib'
 import checkPermissionsMiddleware from './checkPermissionsMiddleware'
 import Permission from '../enumeration/permission'
 import mockPermissions from '../routes/testutils/mockPermissions'
@@ -73,4 +77,41 @@ describe('checkPermissionsMiddleware', () => {
       expect(render).toHaveBeenCalledWith('pages/errors/notFound')
     },
   )
+  describe('when any of several permissions is accepted', () => {
+    const accepted = [Permission.edit_contact_restrictions, PrisonerAlertsPermission.edit]
+    const service = {
+      getPrisonerDetails: jest.fn().mockResolvedValue({ prisonerNumber: 'A1234BC' }),
+      getPrisonerPermissions: jest.fn().mockReturnValue({}),
+    } as unknown as PermissionsService
+
+    beforeEach(() => {
+      req = { params: { prisonerNumber: 'A1234BC' } }
+    })
+
+    it('should call next() if only one of the accepted permissions is granted', async () => {
+      jest.mocked(isGranted).mockImplementation(permission => permission === PrisonerAlertsPermission.edit)
+
+      await checkPermissionsMiddleware(service, Permission.edit_contacts, accepted)(
+        req as Request,
+        res as Response,
+        next,
+      )
+
+      expect(next).toHaveBeenCalled()
+    })
+
+    it('should render not found with a 403 if none are granted', async () => {
+      jest.mocked(isGranted).mockReturnValue(false)
+
+      await checkPermissionsMiddleware(service, Permission.edit_contacts, accepted)(
+        req as Request,
+        res as Response,
+        next,
+      )
+
+      expect(next).not.toHaveBeenCalled()
+      expect(status).toHaveBeenCalledWith(403)
+      expect(render).toHaveBeenCalledWith('pages/errors/notFound')
+    })
+  })
 })

@@ -26,8 +26,13 @@
     {% endset %}
 
     {% set actionsHtml %}
+      {% if opts.canMaintain %}
       <div><a class="govuk-link govuk-link--no-visited-state" href="/prisoner/{{ prisonerNumber }}/restrictions/{{ restrictionId }}/update" data-qa="{{ restrictionClass }}-{{ restrictionId }}-change-link">Change<span class="govuk-visually-hidden"> {{ restrictionTypeDescription }} restriction</span></a></div>
       <div><a class="govuk-link govuk-link--no-visited-state" href="/prisoner/{{ prisonerNumber }}/restrictions/{{ restrictionId }}/delete" data-qa="{{ restrictionClass }}-{{ restrictionId }}-delete-link">Delete<span class="govuk-visually-hidden"> {{ restrictionTypeDescription }} restriction</span></a></div>
+      {% else %}
+      <div><span class="app-disabled-action" title="{{ opts.maintainRolesHint }}" data-qa="{{ restrictionClass }}-{{ restrictionId }}-change-disabled">Change<span class="govuk-visually-hidden"> {{ restrictionTypeDescription }} restriction (unavailable). {{ opts.maintainRolesHint }}</span></span></div>
+      <div><span class="app-disabled-action" title="{{ opts.maintainRolesHint }}" data-qa="{{ restrictionClass }}-{{ restrictionId }}-delete-disabled">Delete<span class="govuk-visually-hidden"> {{ restrictionTypeDescription }} restriction (unavailable). {{ opts.maintainRolesHint }}</span></span></div>
+      {% endif %}
     {% endset %}
     {% set row = [
       { html: restrictionTypeHtml, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-type-value"} },
@@ -36,7 +41,7 @@
       { text: expiryDate | formatDate('d/M/yyyy') if expiryDate else 'Not provided', attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-expiry-date-value"} },
       { text: enteredByDisplayName, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-entered-by-value"} }
     ] %}
-    {% if opts.canMaintain %}
+    {% if opts.showActions %}
       {% set row = (row.push({ html: actionsHtml }), row) %}
     {% endif %}
     {% set rows = (rows.push(row), rows) %}
@@ -49,7 +54,7 @@
     { text: "Expiry date" },
     { text: "Last updated by" }
   ] %}
-  {% if opts.canMaintain %}
+  {% if opts.showActions %}
     {% set head = (head.push({ html: '<span class="govuk-visually-hidden">Actions</span>' }), head) %}
   {% endif %}
   {% set caption = 'These restrictions apply to ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
@@ -75,6 +80,9 @@
       head: head,
       rows: rows
     }) }}
+    {% if opts.showActions and not opts.canMaintain %}
+      <p class="govuk-hint" data-qa="restrictions-roles-hint">{{ opts.maintainRolesHint }}</p>
+    {% endif %}
   {% else %}
     <p class="govuk-body restrictions-caption-{{ restrictionClass }}" >{{ emptyCaption }}</p>
   {% endif %}

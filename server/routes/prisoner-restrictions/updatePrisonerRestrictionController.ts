@@ -15,6 +15,7 @@ import Urls from '../urls'
 import {
   RestrictionParams,
   MAX_COMMENT_LENGTH,
+  MAINTAIN_RESTRICTIONS_PERMISSIONS,
   formatDateForDatePicker,
   prisonerName,
 } from './prisonerRestrictionCommon'
@@ -29,6 +30,8 @@ export default class UpdatePrisonerRestrictionController implements PageHandler 
   public PAGE_NAME = Page.UPDATE_PRISONER_RESTRICTION_PAGE
 
   public REQUIRED_PERMISSION = Permission.edit_contact_restrictions
+
+  public ACCEPTED_PERMISSIONS = MAINTAIN_RESTRICTIONS_PERMISSIONS
 
   GET = async (req: Request<RestrictionParams>, res: Response): Promise<void> => {
     const { prisonerNumber, prisonerRestrictionId } = req.params

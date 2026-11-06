@@ -9,7 +9,7 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../middleware/setUpSuccessNotifica
 import Permission from '../../enumeration/permission'
 import Urls from '../urls'
 
-import { RestrictionParams, prisonerName } from './prisonerRestrictionCommon'
+import { RestrictionParams, MAINTAIN_RESTRICTIONS_PERMISSIONS, prisonerName } from './prisonerRestrictionCommon'
 
 export default class DeletePrisonerRestrictionController implements PageHandler {
   constructor(
@@ -20,6 +20,8 @@ export default class DeletePrisonerRestrictionController implements PageHandler 
   public PAGE_NAME = Page.DELETE_PRISONER_RESTRICTION_PAGE
 
   public REQUIRED_PERMISSION = Permission.edit_contact_restrictions
+
+  public ACCEPTED_PERMISSIONS = MAINTAIN_RESTRICTIONS_PERMISSIONS
 
   GET = async (req: Request<RestrictionParams>, res: Response): Promise<void> => {
     const { prisonerNumber, prisonerRestrictionId } = req.params

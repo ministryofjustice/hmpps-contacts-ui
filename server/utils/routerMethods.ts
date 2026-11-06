@@ -17,7 +17,7 @@ export const routerMethods = (router: Router, permissionsService: PermissionsSer
     router.get(
       path,
       ...handlers,
-      checkPermissionsMiddleware(permissionsService, controller.REQUIRED_PERMISSION),
+      checkPermissionsMiddleware(permissionsService, controller.REQUIRED_PERMISSION, controller.ACCEPTED_PERMISSIONS),
       logPageViewMiddleware(auditService, controller),
       saveBackLinkMiddleware(),
       controller.GET,
@@ -30,7 +30,7 @@ export const routerMethods = (router: Router, permissionsService: PermissionsSer
     router.post(
       path,
       ...(handlers as RequestHandler[]),
-      checkPermissionsMiddleware(permissionsService, controller.REQUIRED_PERMISSION),
+      checkPermissionsMiddleware(permissionsService, controller.REQUIRED_PERMISSION, controller.ACCEPTED_PERMISSIONS),
       controller.POST ?? [],
     )
   return { get, post }

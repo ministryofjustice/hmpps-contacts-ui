@@ -91,11 +91,26 @@ test.describe('Maintain prisoner restrictions', () => {
     await expect(page.getByTestId('success-banner')).toContainText('You’ve deleted a restriction for')
   })
 
-  test('read only users cannot maintain restrictions', async ({ page }) => {
+  test('users without a maintenance role see greyed out actions explaining the roles needed', async ({ page }) => {
     await stubCommon(['PRISON', 'CONTACTS_ADMINISTRATOR'])
     await signIn(page, listUrl)
     await expect(page.getByTestId('prisoner-restrictions-heading')).toBeVisible()
     await expect(page.getByRole('link', { name: 'Add a prisoner restriction' })).toHaveCount(0)
     await expect(page.getByRole('link', { name: /Change|Delete/ })).toHaveCount(0)
+    await expect(page.getByTestId('add-prisoner-restriction-disabled')).toHaveAttribute(
+      'title',
+      /Contacts Authoriser or Update Alert role/,
+    )
+    await expect(page.getByTestId(`prisoner-restrictions-${prisonerRestrictionId}-change-disabled`)).toBeVisible()
+    await expect(page.getByTestId('restrictions-roles-hint')).toContainText('Contacts Authoriser or Update Alert')
+    await expectAccessible(page)
+  })
+
+  test('users with only the update alert role can maintain restrictions', async ({ page }) => {
+    await stubCommon(['PRISON', 'UPDATE_ALERT'])
+    await signIn(page, listUrl)
+    await expect(page.getByRole('link', { name: 'Add a prisoner restriction' })).toBeVisible()
+    await page.getByRole('link', { name: /Change/ }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Change a prisoner restriction')
   })
 })

@@ -234,3 +234,9 @@ div.moj-action-bar__filter::after { content: none !important; }
     flex-grow: 1;
   }
 }
+
+// A greyed out action the user is not permitted to use; the reason is given in the title and visible hint text
+.app-disabled-action {
+  color: govuk-colour('dark-grey');
+  cursor: not-allowed;
+}
