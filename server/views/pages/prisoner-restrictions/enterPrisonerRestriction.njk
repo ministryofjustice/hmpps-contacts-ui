@@ -21,9 +21,6 @@
     <div class="govuk-grid-column-two-thirds">
       <span class="govuk-caption-l">Manage prisoner restrictions</span>
       <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
-      <p>
-        <b>Prisoner:</b> <span data-qa="prisoner-name-and-id">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span>
-      </p>
       <form method="POST" novalidate>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
