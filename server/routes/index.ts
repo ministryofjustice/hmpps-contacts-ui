@@ -4,6 +4,7 @@ import PrisonerImageRoutes from './prisonerImage/prisonerImageRoutes'
 import AddContactRoutes from './contacts/add/addContactRoutes'
 import ManageContactsRoutes from './contacts/manage/manageContactsRoutes'
 import RestrictionsRoutes from './restrictions/restrictionsRoutes'
+import PrisonerRestrictionsRoutes from './prisoner-restrictions/prisonerRestrictionsRoutes'
 import SearchContactRoutes from './contacts/view/searchContactRoutes'
 import StaticRoutes from './static/staticRoutes'
 import SaveBackLinkController from './backLink/saveBackLinkController'
@@ -59,6 +60,19 @@ export default function routes({
   router.use(
     '/',
     RestrictionsRoutes(
+      auditService,
+      contactsService,
+      referenceDataService,
+      prisonerSearchService,
+      restrictionsService,
+      permissionsService,
+      alertsService,
+    ),
+  )
+
+  router.use(
+    '/',
+    PrisonerRestrictionsRoutes(
       auditService,
       contactsService,
       referenceDataService,
