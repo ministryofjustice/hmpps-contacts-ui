@@ -29,6 +29,7 @@ import {
   PrisonerRestrictionDetails,
   CreatePrisonerRestrictionRequest,
   UpdatePrisonerRestrictionRequest,
+  ClosePrisonerRestrictionRequest,
   PatchContactAddressRequest,
   PatchContactRequest,
   PatchContactResponse,
@@ -513,13 +514,14 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
-  async deletePrisonerRestriction(
+  async closePrisonerRestriction(
     prisonerNumber: string,
     prisonerRestrictionId: number,
+    request: ClosePrisonerRestrictionRequest,
     username: string,
-  ): Promise<void> {
-    return this.delete(
-      { path: `/prisoner-restrictions/${prisonerNumber}/${prisonerRestrictionId}` },
+  ): Promise<PrisonerRestrictionDetails> {
+    return this.post<PrisonerRestrictionDetails>(
+      { path: `/prisoner-restrictions/${prisonerNumber}/${prisonerRestrictionId}/close`, data: request },
       asSystem(username),
     )
   }

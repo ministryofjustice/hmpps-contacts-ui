@@ -15,7 +15,14 @@ export const prisonerRestrictionId = 175317
 export const prisoner = TestData.prisoner({ prisonerNumber, lastName: 'Prisoner', firstName: 'Test' })
 
 export const existingRestrictions = pagedPrisonerRestrictionDetails({
-  content: [{ ...pagedPrisonerRestrictionDetails().content![0], prisonerNumber, prisonerRestrictionId }],
+  content: [
+    {
+      ...pagedPrisonerRestrictionDetails().content![0],
+      prisonerNumber,
+      prisonerRestrictionId,
+      expiryDate: '2099-12-31',
+    },
+  ],
 })
 
 export async function stubCommon(roles: string[] = ['PRISON', 'CONTACTS_AUTHORISER']) {
@@ -28,7 +35,7 @@ export async function stubCommon(roles: string[] = ['PRISON', 'CONTACTS_AUTHORIS
   await prisonerSearchApi.stubPrisonerAlertsById(pagedPrisonerAlertsData({ prisonNumber: prisonerNumber }))
 }
 
-export const stubWrite = (method: 'POST' | 'PUT' | 'DELETE', urlPath: string, status: number, jsonBody?: unknown) =>
+export const stubWrite = (method: 'POST' | 'PUT', urlPath: string, status: number, jsonBody?: unknown) =>
   stubFor({
     request: { method, urlPath },
     response: { status, headers: { 'Content-Type': 'application/json;charset=UTF-8' }, jsonBody },
@@ -47,7 +54,10 @@ export async function signIn(page: Page, startUrl: string) {
   await page.goto(url)
 }
 
-export async function expectAccessible(page: Page) {
-  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()
+export async function expectAccessible(page: Page, disableRules: string[] = []) {
+  const results = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+    .disableRules(disableRules)
+    .analyze()
   expect(results.violations).toEqual([])
 }

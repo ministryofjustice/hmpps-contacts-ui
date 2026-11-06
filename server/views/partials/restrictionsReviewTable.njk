@@ -1,13 +1,11 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
-{% from "moj/components/alert/macro.njk" import mojAlert %}
 
 {% macro restrictionsReviewTable(opts) %}
   {% set restrictions = opts.restrictions %}
   {% set restrictionClass = opts.restrictionClass %}
   {% set prisonerDetails = opts.prisonerDetails %}
   {% set prisonerNumber = prisonerDetails.prisonerNumber %}
-  {% set hideTableTitle = opts.hideTableTitle %}
   {% set rows = [] %}
 
   {% for restriction in restrictions | sortRestrictions %}
@@ -25,12 +23,9 @@
     {% endset %}
 
     {% set actionsHtml %}
-      {% if opts.canMaintain %}
       <div><a class="govuk-link govuk-link--no-visited-state" href="/prisoner/{{ prisonerNumber }}/restrictions/{{ restrictionId }}/update" data-qa="{{ restrictionClass }}-{{ restrictionId }}-change-link">Change<span class="govuk-visually-hidden"> {{ restrictionTypeDescription }} restriction</span></a></div>
-      <div><a class="govuk-link govuk-link--no-visited-state" href="/prisoner/{{ prisonerNumber }}/restrictions/{{ restrictionId }}/delete" data-qa="{{ restrictionClass }}-{{ restrictionId }}-delete-link">Delete<span class="govuk-visually-hidden"> {{ restrictionTypeDescription }} restriction</span></a></div>
-      {% else %}
-      <div><span class="app-disabled-action" title="{{ opts.maintainRolesHint }}" data-qa="{{ restrictionClass }}-{{ restrictionId }}-change-disabled">Change<span class="govuk-visually-hidden"> {{ restrictionTypeDescription }} restriction (unavailable). {{ opts.maintainRolesHint }}</span></span></div>
-      <div><span class="app-disabled-action" title="{{ opts.maintainRolesHint }}" data-qa="{{ restrictionClass }}-{{ restrictionId }}-delete-disabled">Delete<span class="govuk-visually-hidden"> {{ restrictionTypeDescription }} restriction (unavailable). {{ opts.maintainRolesHint }}</span></span></div>
+      {% if not (expiryDate | isDateAndInThePast) %}
+      <div><a class="govuk-link govuk-link--no-visited-state" href="/prisoner/{{ prisonerNumber }}/restrictions/{{ restrictionId }}/close" data-qa="{{ restrictionClass }}-{{ restrictionId }}-close-link">Close<span class="govuk-visually-hidden"> {{ restrictionTypeDescription }} restriction</span></a></div>
       {% endif %}
     {% endset %}
     {% set row = [
@@ -58,9 +53,6 @@
   {% endif %}
   {% set caption = 'These restrictions apply to ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
   {% set emptyCaption = 'No prisoner restrictions apply to ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
-  {% if not hideTableTitle %}
-    <h2 class="govuk-heading-m govuk-!-margin-bottom-6" data-qa="{{ restrictionClass }}-title">Global prisoner restrictions</h2>
-  {% endif %}
   {% if restrictions.length %}
     {{ govukTable({
       firstCellIsHeader: false,
@@ -69,9 +61,6 @@
       head: head,
       rows: rows
     }) }}
-    {% if opts.showActions and not opts.canMaintain %}
-      <p class="govuk-hint" data-qa="restrictions-roles-hint">{{ opts.maintainRolesHint }}</p>
-    {% endif %}
   {% else %}
     <p class="govuk-body restrictions-caption-{{ restrictionClass }}" >{{ emptyCaption }}</p>
   {% endif %}

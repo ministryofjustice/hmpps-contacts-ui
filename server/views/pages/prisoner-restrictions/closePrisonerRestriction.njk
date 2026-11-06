@@ -1,0 +1,81 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+
+{% set title = "Close a prisoner restriction" %}
+{% set pageTitle = title + " - Manage prisoner restrictions - DPS" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% set expiryDateHtml %}
+  {{ mojDatePicker({
+    id: "expiryDate",
+    name: "expiryDate",
+    label: { text: "Close date", classes: "govuk-label--s" },
+    hint: { text: "For example, 24/9/2030." },
+    minDate: minDate,
+    errorMessage: validationErrors | findError('expiryDate'),
+    value: expiryDate
+  }) }}
+{% endset %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Manage prisoner restrictions</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+      <p>
+        <b>Prisoner:</b> <span data-qa="prisoner-name-and-id">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span>
+      </p>
+      {{ govukSummaryList({
+        rows: [
+          { key: { text: "Restriction type" }, value: { text: restriction.restrictionTypeDescription } },
+          { key: { text: "Start date" }, value: { text: restriction.effectiveDate | formatDate('d/M/yyyy') } },
+          { key: { text: "Expiry date" }, value: { text: (restriction.expiryDate | formatDate('d/M/yyyy')) if restriction.expiryDate else 'Not provided' } },
+          { key: { text: "Comments" }, value: { text: restriction.commentText or 'Not provided' } }
+        ]
+      }) }}
+
+      {% if alreadyClosed %}
+        <p class="govuk-body" data-qa="already-closed">This restriction has already closed.</p>
+        {{ govukButton({
+          text: "Back to prisoner restrictions",
+          href: navigation.cancelButton,
+          attributes: {"data-qa": "cancel-button"}
+        }) }}
+      {% else %}
+        <form method="POST" novalidate>
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+          {{ govukRadios({
+            name: "when",
+            idPrefix: "when",
+            fieldset: { legend: { text: "When should this restriction close?", classes: "govuk-fieldset__legend--m" } },
+            errorMessage: validationErrors | findError('when'),
+            items: [
+              { value: "TODAY", text: "Today", checked: when == "TODAY", attributes: {"data-qa": "close-today"} },
+              { value: "FUTURE", text: "Another date", checked: when == "FUTURE", conditional: { html: expiryDateHtml }, attributes: {"data-qa": "close-future"} }
+            ]
+          }) }}
+
+          {{ govukWarningText({
+            text: "Closing this restriction will make it inactive. You will not be able to reactivate it.",
+            iconFallbackText: "Warning"
+          }) }}
+
+          <div class="govuk-button-group">
+            {{ govukButton({
+              text: "Confirm and close",
+              type: "submit",
+              classes: 'govuk-button--warning',
+              attributes: {"data-qa": "continue-button"},
+              preventDoubleClick: true
+            }) }}
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+          </div>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

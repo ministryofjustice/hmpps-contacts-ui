@@ -7728,6 +7728,15 @@ export interface components {
       /** @description Comments for the restriction */
       commentText?: string
     }
+    /** @description Request to close a prisoner restriction by setting its expiry date */
+    ClosePrisonerRestrictionRequest: {
+      /**
+       * Format: date
+       * @description The date the restriction expires. Must not be in the past, or before the effective date.
+       * @example 2024-12-31
+       */
+      expiryDate: string
+    }
     /** @description Prisoner restriction details response */
     PrisonerRestrictionDetails: {
       /**

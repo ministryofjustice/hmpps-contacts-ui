@@ -217,20 +217,26 @@ export default class RestrictionsService extends AuditedService {
     )
   }
 
-  async deletePrisonerRestriction(
+  async closePrisonerRestriction(
     prisonerNumber: string,
     prisonerRestrictionId: number,
+    expiryDate: string,
     user: Express.User,
     correlationId: string,
-  ): Promise<void> {
+  ): Promise<PrisonerRestrictionDetails> {
     return this.handleAuditEvent(
-      this.contactsApiClient.deletePrisonerRestriction(prisonerNumber, prisonerRestrictionId, user.username),
+      this.contactsApiClient.closePrisonerRestriction(
+        prisonerNumber,
+        prisonerRestrictionId,
+        { expiryDate },
+        user.username,
+      ),
       {
-        what: 'API_DELETE_PRISONER_RESTRICTION',
+        what: 'API_POST_CLOSE_PRISONER_RESTRICTION',
         who: user.username,
         subjectType: 'PRISONER_RESTRICTION',
         subjectId: String(prisonerRestrictionId),
-        details: { prisonerNumber },
+        details: { prisonerNumber, expiryDate },
         correlationId,
       },
     )

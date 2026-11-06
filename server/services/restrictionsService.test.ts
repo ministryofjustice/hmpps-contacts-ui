@@ -590,11 +590,11 @@ describe('restrictionsService', () => {
     it.each([
       ['create', () => service.createPrisonerRestriction('A1234BC', form, user, 'corr-1'), 'POST', 'A1234BC'],
       ['update', () => service.updatePrisonerRestriction('A1234BC', 7, form, user, 'corr-1'), 'PUT', '7'],
-      ['delete', () => service.deletePrisonerRestriction('A1234BC', 7, user, 'corr-1'), 'DELETE', '7'],
+      ['close', () => service.closePrisonerRestriction('A1234BC', 7, '2030-01-01', user, 'corr-1'), 'POST_CLOSE', '7'],
     ])('audits a successful %s', async (_, act, method, subjectId) => {
       apiClient.createPrisonerRestriction.mockResolvedValue({} as never)
       apiClient.updatePrisonerRestriction.mockResolvedValue({} as never)
-      apiClient.deletePrisonerRestriction.mockResolvedValue(undefined as never)
+      apiClient.closePrisonerRestriction.mockResolvedValue({} as never)
 
       await act()
 
@@ -603,16 +603,16 @@ describe('restrictionsService', () => {
       )
     })
 
-    it('audits a failed delete with the status code and rethrows', async () => {
-      apiClient.deletePrisonerRestriction.mockRejectedValue({ responseStatus: 404 })
+    it('audits a failed close with the status code and rethrows', async () => {
+      apiClient.closePrisonerRestriction.mockRejectedValue({ responseStatus: 404 })
 
-      await expect(service.deletePrisonerRestriction('A1234BC', 7, user, 'corr-1')).rejects.toEqual({
+      await expect(service.closePrisonerRestriction('A1234BC', 7, '2030-01-01', user, 'corr-1')).rejects.toEqual({
         responseStatus: 404,
       })
 
       expect(auditService.logAuditEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          what: 'FAILURE_API_DELETE_PRISONER_RESTRICTION',
+          what: 'FAILURE_API_POST_CLOSE_PRISONER_RESTRICTION',
           details: expect.objectContaining({ statusCode: 404 }),
         }),
       )

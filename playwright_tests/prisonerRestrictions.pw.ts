@@ -17,12 +17,12 @@ test.describe('Maintain prisoner restrictions', () => {
     await stubCommon()
   })
 
-  test('lists restrictions with add, change and delete actions', async ({ page }) => {
+  test('lists restrictions with add, change and close actions', async ({ page }) => {
     await signIn(page, listUrl)
     await expect(page.getByTestId('prisoner-restrictions-heading')).toBeVisible()
     await expect(page.getByRole('link', { name: 'Add a prisoner restriction' })).toBeVisible()
     await expect(page.getByRole('link', { name: /Change/ })).toBeVisible()
-    await expect(page.getByRole('link', { name: /Delete/ })).toBeVisible()
+    await expect(page.getByRole('link', { name: /Close/ })).toBeVisible()
     await expectAccessible(page)
   })
 
@@ -77,40 +77,49 @@ test.describe('Maintain prisoner restrictions', () => {
     })
   })
 
-  test('deletes a restriction after confirmation', async ({ page }) => {
-    const path = `${restrictionsApiPath}/${prisonerRestrictionId}`
-    await stubWrite('DELETE', path, 204)
+  test('closes a restriction today after confirmation', async ({ page }) => {
+    const path = `${restrictionsApiPath}/${prisonerRestrictionId}/close`
+    await stubWrite('POST', path, 200, {})
     await signIn(page, listUrl)
-    await page.getByRole('link', { name: /Delete/ }).click()
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Are you sure you want to delete this prisoner restriction?',
-    )
-    await expectAccessible(page)
+    await page.getByRole('link', { name: /Close/ }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Close a prisoner restriction')
+    // govuk-frontend sets aria-expanded on conditional radios, which axe flags
+    await expectAccessible(page, ['aria-allowed-attr'])
 
+    await page.getByLabel('Today').check()
     await page.getByTestId('continue-button').click()
-    await expect(page.getByTestId('success-banner')).toContainText('You’ve deleted a restriction for')
+    await expect(page.getByTestId('success-banner')).toContainText('You’ve closed a restriction for')
+    const body = await lastRequestBody('POST', path)
+    expect(body.expiryDate).toMatch(/^\d{4}-\d{2}-\d{2}$/)
   })
 
-  test('users without a maintenance role see greyed out actions explaining the roles needed', async ({ page }) => {
-    await stubCommon(['PRISON', 'CONTACTS_ADMINISTRATOR'])
+  test('closes a restriction on a future date', async ({ page }) => {
+    const path = `${restrictionsApiPath}/${prisonerRestrictionId}/close`
+    await stubWrite('POST', path, 200, {})
     await signIn(page, listUrl)
-    await expect(page.getByTestId('prisoner-restrictions-heading')).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Add a prisoner restriction' })).toHaveCount(0)
-    await expect(page.getByRole('link', { name: /Change|Delete/ })).toHaveCount(0)
-    await expect(page.getByTestId('add-prisoner-restriction-disabled')).toHaveAttribute(
-      'title',
-      /Contacts Authoriser or Update Alert role/,
-    )
-    await expect(page.getByTestId(`prisoner-restrictions-${prisonerRestrictionId}-change-disabled`)).toBeVisible()
-    await expect(page.getByTestId('restrictions-roles-hint')).toContainText('Contacts Authoriser or Update Alert')
-    await expectAccessible(page)
+    await page.getByRole('link', { name: /Close/ }).click()
+    await page.getByLabel('Another date').check()
+    await page.locator('#expiryDate').fill('31/12/2098')
+    await page.getByTestId('continue-button').click()
+    await expect(page.getByTestId('success-banner')).toContainText('You’ve set a close date for a restriction for')
+    expect(await lastRequestBody('POST', path)).toEqual({ expiryDate: '2098-12-31' })
   })
 
-  test('users with only the update alert role can maintain restrictions', async ({ page }) => {
-    await stubCommon(['PRISON', 'UPDATE_ALERT'])
+  test('validates the close form', async ({ page }) => {
     await signIn(page, listUrl)
-    await expect(page.getByRole('link', { name: 'Add a prisoner restriction' })).toBeVisible()
-    await page.getByRole('link', { name: /Change/ }).click()
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Change a prisoner restriction')
+    await page.getByRole('link', { name: /Close/ }).click()
+    await page.getByLabel('Another date').check()
+    await page.getByTestId('continue-button').click()
+    await expect(page.locator('.govuk-error-summary')).toBeVisible()
   })
+
+  for (const role of ['UPDATE_ALERT', 'PRISONER_PROFILE_SENSITIVE_EDIT']) {
+    test(`users with only ${role} cannot view or maintain restrictions`, async ({ page }) => {
+      await stubCommon(['PRISON', role])
+      await signIn(page, listUrl)
+      await expect(page.getByTestId('prisoner-restrictions-heading')).toHaveCount(0)
+      const response = await page.goto(`/prisoner/${prisonerNumber}/restrictions/add`)
+      expect(response?.status()).toBeGreaterThanOrEqual(400)
+    })
+  }
 })

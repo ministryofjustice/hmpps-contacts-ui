@@ -10,9 +10,13 @@ import populatePrisonerDetailsIfInCaseload from '../../middleware/populatePrison
 import { validate } from '../../middleware/validationMiddleware'
 import { restrictionSchema } from '../restrictions/schema/restrictionSchema'
 import { routerMethods } from '../../utils/routerMethods'
-import config from '../../config'
 import AddPrisonerRestrictionController from './addPrisonerRestrictionController'
-import DeletePrisonerRestrictionController from './deletePrisonerRestrictionController'
+import ClosePrisonerRestrictionController from './closePrisonerRestrictionController'
+import { closePrisonerRestrictionSchema } from './closePrisonerRestrictionSchema'
+import {
+  requireMaintainRestrictionsRole,
+  requirePrisonerRestrictionsMaintenanceEnabled,
+} from './prisonerRestrictionCommon'
 import UpdatePrisonerRestrictionController from './updatePrisonerRestrictionController'
 
 const PrisonerRestrictionsRoutes = (
@@ -25,15 +29,15 @@ const PrisonerRestrictionsRoutes = (
   alertsService: AlertsService,
 ) => {
   const router = Router({ mergeParams: true })
-  if (!config.feature.prisonerRestrictionsMaintenanceEnabled) return router
-
   const { get, post } = routerMethods(router, permissionsService, auditService)
   const populatePrisoner = populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)
+  // Routes are registered for every prison; the feature is only available to enabled prisons and permitted roles
+  const guards = [requirePrisonerRestrictionsMaintenanceEnabled, requireMaintainRestrictionsRole]
 
   const addPath = '/prisoner/:prisonerNumber/restrictions/add'
   const addController = new AddPrisonerRestrictionController(referenceDataService, restrictionsService)
-  get(addPath, addController, populatePrisoner)
-  post(addPath, addController, populatePrisoner, validate(restrictionSchema()))
+  get(addPath, addController, ...guards, populatePrisoner)
+  post(addPath, addController, ...guards, populatePrisoner, validate(restrictionSchema()))
 
   const updatePath = '/prisoner/:prisonerNumber/restrictions/:prisonerRestrictionId/update'
   const updateController = new UpdatePrisonerRestrictionController(
@@ -41,13 +45,13 @@ const PrisonerRestrictionsRoutes = (
     referenceDataService,
     restrictionsService,
   )
-  get(updatePath, updateController, populatePrisoner)
-  post(updatePath, updateController, populatePrisoner, validate(restrictionSchema()))
+  get(updatePath, updateController, ...guards, populatePrisoner)
+  post(updatePath, updateController, ...guards, populatePrisoner, validate(restrictionSchema()))
 
-  const deletePath = '/prisoner/:prisonerNumber/restrictions/:prisonerRestrictionId/delete'
-  const deleteController = new DeletePrisonerRestrictionController(contactsService, restrictionsService)
-  get(deletePath, deleteController, populatePrisoner)
-  post(deletePath, deleteController, populatePrisoner)
+  const closePath = '/prisoner/:prisonerNumber/restrictions/:prisonerRestrictionId/close'
+  const closeController = new ClosePrisonerRestrictionController(contactsService, restrictionsService)
+  get(closePath, closeController, ...guards, populatePrisoner)
+  post(closePath, closeController, ...guards, populatePrisoner, validate(closePrisonerRestrictionSchema()))
 
   return router
 }

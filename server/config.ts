@@ -145,8 +145,11 @@ export default {
   linkedPrisonersConfirmationThreshold: Number(get('LINKED_PRISONERS_CONFIRMATION_THRESHOLD', 20)),
 
   feature: {
-    // Allows staff to add, change and delete prisoner restrictions in DPS (synchronised to NOMIS by the Syscon sync service)
-    prisonerRestrictionsMaintenanceEnabled:
-      get('FEATURE_PRISONER_RESTRICTIONS_MAINTENANCE_ENABLED', 'false') === 'true',
+    // Comma separated list of prison codes (e.g. 'HEI,RSI') whose staff can add, change and close prisoner restrictions
+    // in DPS (synchronised to NOMIS by the Syscon sync service). Empty or unset means no prisons.
+    prisonerRestrictionsMaintenanceEnabledPrisons: get('PRISONER_RESTRICTIONS_MAINTENANCE_ENABLED_PRISONS', '')
+      .split(',')
+      .map(prison => prison.trim().toUpperCase())
+      .filter(Boolean),
   },
 }

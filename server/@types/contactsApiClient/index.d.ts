@@ -40,6 +40,7 @@ export type PagedModelLinkedPrisonerDetails = components['schemas']['PagedModelL
 export type PrisonerRestrictionDetails = components['schemas']['PrisonerRestrictionDetails']
 export type CreatePrisonerRestrictionRequest = components['schemas']['CreatePrisonerRestrictionRequest']
 export type UpdatePrisonerRestrictionRequest = components['schemas']['UpdatePrisonerRestrictionRequest']
+export type ClosePrisonerRestrictionRequest = components['schemas']['ClosePrisonerRestrictionRequest']
 export type PagedModelPrisonerRestrictionDetails = components['schemas']['PagedModelPrisonerRestrictionDetails']
 export type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 export type EmailAddress = components['schemas']['EmailAddress']

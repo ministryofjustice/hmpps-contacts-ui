@@ -43,7 +43,7 @@ export default class Urls {
     return `/prisoner/${prisonerNumber}/restrictions/${prisonerRestrictionId}/update`
   }
 
-  static deletePrisonerRestriction = (prisonerNumber: string, prisonerRestrictionId: string | number) => {
-    return `/prisoner/${prisonerNumber}/restrictions/${prisonerRestrictionId}/delete`
+  static closePrisonerRestriction = (prisonerNumber: string, prisonerRestrictionId: string | number) => {
+    return `/prisoner/${prisonerNumber}/restrictions/${prisonerRestrictionId}/close`
   }
 }

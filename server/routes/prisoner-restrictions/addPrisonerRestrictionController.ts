@@ -10,12 +10,7 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../middleware/setUpSuccessNotifica
 import Permission from '../../enumeration/permission'
 import Urls from '../urls'
 
-import {
-  PrisonerParams,
-  MAX_COMMENT_LENGTH,
-  MAINTAIN_RESTRICTIONS_PERMISSIONS,
-  prisonerName,
-} from './prisonerRestrictionCommon'
+import { PrisonerParams, MAX_COMMENT_LENGTH, prisonerName } from './prisonerRestrictionCommon'
 
 export default class AddPrisonerRestrictionController implements PageHandler {
   constructor(
@@ -25,9 +20,7 @@ export default class AddPrisonerRestrictionController implements PageHandler {
 
   public PAGE_NAME = Page.ADD_PRISONER_RESTRICTION_PAGE
 
-  public REQUIRED_PERMISSION = Permission.edit_contact_restrictions
-
-  public ACCEPTED_PERMISSIONS = MAINTAIN_RESTRICTIONS_PERMISSIONS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerParams>, res: Response): Promise<void> => {
     const { prisonerNumber } = req.params

@@ -58,7 +58,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
       prisonerContactRestrictions: [],
       contactGlobalRestrictions: [],
     })
-    contactsService.getPrisonerRestrictions.mockResolvedValue(RestrictionsTestData.stubRestrictionsData())
   })
 
   it('should audit page view', async () => {
@@ -118,7 +117,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
     })
-    it('should render restrictions tab with relationship ,global contact and global prisoner restrictions', async () => {
+    it('should render restrictions tab with relationship ,global contact and global contact restrictions', async () => {
       restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails()],
         contactGlobalRestrictions: [
@@ -147,10 +146,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
         'These restrictions apply to contact Jones Mason across the whole prison estate.',
       )
 
-      expect($('.restrictions-caption-prisoner-restrictions').text()).toStrictEqual(
-        'These restrictions apply to John Smith across the whole prison estate.',
-      )
-
       const relationshipRestrictionTitleText = $('[data-qa="PRISONER_CONTACT-1-type-value"]').text().trim()
       expect(relationshipRestrictionTitleText).toContain('Child Visitors to be Vetted')
       expect($('[data-qa="PRISONER_CONTACT-1-start-date-value"]').text().trim()).toStrictEqual('1/1/2024')
@@ -164,14 +159,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
       expect($('[data-qa="CONTACT_GLOBAL-2-expiry-date-value"]').text().trim()).toStrictEqual('1/8/2050')
       expect($('[data-qa="CONTACT_GLOBAL-2-entered-by-value"]').text().trim()).toStrictEqual('User One')
       expect($('[data-qa="CONTACT_GLOBAL-2-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
-
-      expect($('[data-qa="prisoner-restrictions-175317-type-value"]').text().trim()).toContain('BAN')
-      expect($('[data-qa="prisoner-restrictions-175317-start-date-value"]').text().trim()).toStrictEqual('2/10/2024')
-      expect($('[data-qa="prisoner-restrictions-175317-expiry-date-value"]').text().trim()).toStrictEqual('31/10/2024')
-      expect($('[data-qa="prisoner-restrictions-175317-entered-by-value"]').text().trim()).toStrictEqual(
-        'Prabash Balasuriya',
-      )
-      expect($('[data-qa="prisoner-restrictions-175317-comments-value"]').text().trim()).toStrictEqual('Test comment')
     })
 
     it('should render global restrictions tab with expired restrictions', async () => {
@@ -230,26 +217,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
         contactGlobalRestrictions: [],
         prisonerContactRestrictions: [],
       })
-      contactsService.getPrisonerRestrictions.mockResolvedValue({
-        content: [
-          {
-            prisonerRestrictionId: 175317,
-            prisonerNumber: 'G4793VF',
-            restrictionType: 'BAN',
-            restrictionTypeDescription: 'Child Visitors to be Vetted',
-            effectiveDate: '2024-10-02',
-            authorisedUsername: 'PBalasuriya',
-            authorisedByDisplayName: 'Prabash Balasuriya',
-            commentText: 'Test comment',
-            expiryDate: '2024-10-31',
-            currentTerm: true,
-            createdBy: 'JDIMBLEBY_GEN',
-            createdTime: '2024-10-02T11:58:01.285998',
-            updatedBy: 'JDIMBLEBY_GEN',
-            updatedTime: '2024-10-02T11:58:01.285998',
-          },
-        ],
-      })
       // When
       const response = await request(app).get(
         `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-restrictions`,
@@ -257,10 +224,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
 
       // Then
       const $ = cheerio.load(response.text)
-
-      const prisonerRestrictionTitleText = $('[data-qa="prisoner-restrictions-175317-type-value"]').text().trim()
-      expect(prisonerRestrictionTitleText).toContain('Child Visitors to be Vetted')
-      expect(prisonerRestrictionTitleText).toContain('(expired)')
     })
 
     it('should render restrictions tab with no restrictions message', async () => {
@@ -269,7 +232,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
         contactGlobalRestrictions: [],
         prisonerContactRestrictions: [],
       })
-      contactsService.getPrisonerRestrictions.mockResolvedValue({ content: [] })
 
       // When
       const response = await request(app).get(
@@ -284,9 +246,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
       )
       expect($('.restrictions-caption-CONTACT_GLOBAL').text()).toStrictEqual(
         'No restrictions apply to contact Jones Mason across the whole prison estate.',
-      )
-      expect($('.restrictions-caption-prisoner-restrictions').text()).toStrictEqual(
-        'No prisoner restrictions apply to John Smith across the whole prison estate.',
       )
     })
 
@@ -304,26 +263,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
           }),
         ],
       })
-      contactsService.getPrisonerRestrictions.mockResolvedValue({
-        content: [
-          {
-            prisonerRestrictionId: 175317,
-            prisonerNumber: 'G4793VF',
-            restrictionType: 'BAN',
-            restrictionTypeDescription: 'BAN',
-            effectiveDate: '2024-10-02',
-            authorisedUsername: 'PBalasuriya',
-            authorisedByDisplayName: 'Prabash Balasuriya',
-            commentText: '',
-            expiryDate: '',
-            currentTerm: true,
-            createdBy: 'JDIMBLEBY_GEN',
-            createdTime: '2024-10-02T11:58:01.285998',
-            updatedBy: 'JDIMBLEBY_GEN',
-            updatedTime: '2024-10-02T11:58:01.285998',
-          },
-        ],
-      })
       // When
       const response = await request(app).get(
         `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-restrictions`,
@@ -337,11 +276,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
 
       expect($('[data-qa="CONTACT_GLOBAL-1-expiry-date-value"]').text().trim()).toStrictEqual('Not provided')
       expect($('[data-qa="CONTACT_GLOBAL-1-comments-value"]').text().trim()).toStrictEqual('Not provided')
-
-      expect($('[data-qa="prisoner-restrictions-175317-expiry-date-value"]').text().trim()).toStrictEqual(
-        'Not provided',
-      )
-      expect($('[data-qa="prisoner-restrictions-175317-comments-value"]').text().trim()).toStrictEqual('Not provided')
     })
 
     it('should show add global and prisoner contact restriction links', async () => {

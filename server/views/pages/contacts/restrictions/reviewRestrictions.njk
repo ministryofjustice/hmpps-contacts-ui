@@ -6,7 +6,6 @@
 
 {% set mainClasses = "app-container govuk-body" %}
 
-{% set maintainRolesHint = "You need the Contacts Authoriser or Update Alert role to add, change or delete prisoner restrictions." %}
 {% set pageTitle = "Review prisoner restrictions and alerts - Manage contacts - DPS" %}
 {% block content %}
 
@@ -18,13 +17,9 @@
         <div class="moj-page-header-actions__title">
             <h1 class="govuk-heading-l" data-qa="prisoner-restrictions-heading">{{ prisonerDetails | formatNameFirstNameFirst(possessiveSuffix = true, excludeMiddleNames = true) }} prisoner restrictions</h1>
         </div>
-        {% if canMaintainPrisonerRestrictions %}
+        {% if prisonerRestrictionsMaintenanceEnabled %}
         <div class="moj-page-header-actions__actions summary-card-header-link">
           <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/restrictions/add" class="govuk-link govuk-!-margin-top-3 govuk-link--no-visited-state" data-qa="add-prisoner-restriction-link">Add a prisoner restriction</a>
-        </div>
-        {% elif prisonerRestrictionsMaintenanceEnabled %}
-        <div class="moj-page-header-actions__actions summary-card-header-link">
-          <span class="app-disabled-action govuk-!-margin-top-3" title="{{ maintainRolesHint }}" data-qa="add-prisoner-restriction-disabled">Add a prisoner restriction<span class="govuk-visually-hidden"> (unavailable). {{ maintainRolesHint }}</span></span>
         </div>
         {% else %}
         <div class="govuk-!-text-align-right govuk-!-padding-right-1">
@@ -40,9 +35,8 @@
         restrictions: prisonerRestrictions,
         prisonerDetails: prisonerDetails,
         hideTableTitle: true,
-        showActions: prisonerRestrictionsMaintenanceEnabled,
-        canMaintain: canMaintainPrisonerRestrictions,
-        maintainRolesHint: maintainRolesHint
+        hideWarning: true,
+        showActions: prisonerRestrictionsMaintenanceEnabled
         }) }}
       </div>
     </div>
