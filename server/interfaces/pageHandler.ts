@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { Page } from '../services/auditService'
 import { PrisonerPermission } from '@ministryofjustice/hmpps-prison-permissions-lib'
+import { Page } from '../services/auditService'
 import Permission from '../enumeration/permission'
 
 export interface PageHandler {
