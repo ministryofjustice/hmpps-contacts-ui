@@ -420,8 +420,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('[data-qa="CONTACT_GLOBAL-2-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
 
       expect($('[data-qa="prisoner-restrictions-title"]').text().trim()).toContain('Global prisoner restrictions')
-      expect($('[data-qa=restrictions-warning]').text().trim()).toHaveLength(0)
-      expect($('[data-qa=restrictions-warning]').text().trim()).toHaveLength(0)
       expect($('[data-qa="prisoner-restrictions-175317-type-value"]').text().trim()).toContain('BAN')
       expect($('[data-qa="prisoner-restrictions-175317-start-date-value"]').text().trim()).toStrictEqual('2/10/2024')
       expect($('[data-qa="prisoner-restrictions-175317-expiry-date-value"]').text().trim()).toStrictEqual('31/10/2024')

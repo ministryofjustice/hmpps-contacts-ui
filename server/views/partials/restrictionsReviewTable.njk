@@ -8,7 +8,6 @@
   {% set prisonerDetails = opts.prisonerDetails %}
   {% set prisonerNumber = prisonerDetails.prisonerNumber %}
   {% set hideTableTitle = opts.hideTableTitle %}
-  {% set hideWarning = opts.hideWarning %}
   {% set rows = [] %}
 
   {% for restriction in restrictions | sortRestrictions %}
@@ -62,16 +61,6 @@
   {% if not hideTableTitle %}
     <h2 class="govuk-heading-m govuk-!-margin-bottom-6" data-qa="{{ restrictionClass }}-title">Global prisoner restrictions</h2>
   {% endif %}
-  {% if not hideWarning %}
-      {{ mojAlert({
-        variant: "warning",
-        title: "Managing prisoner restrictions is not available in DPS",
-        showTitleAsHeading: true,
-        dismissible: false,
-        html: 'You still need to use NOMIS to add and update prisoner restrictions.',
-        attributes: { "data-qa": "restrictions-warning" }
-      }) }}
-   {% endif %}
   {% if restrictions.length %}
     {{ govukTable({
       firstCellIsHeader: false,
