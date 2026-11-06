@@ -7,7 +7,6 @@ import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
-import RestrictionsTestData from '../../../testutils/stubRestrictionsData'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
@@ -209,21 +208,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
       const relationshipRestrictionTitleText = $('[data-qa="PRISONER_CONTACT-1-type-value"]').text().trim()
       expect(relationshipRestrictionTitleText).toContain('Child Visitors to be Vetted')
       expect(relationshipRestrictionTitleText).toContain('(expired)')
-    })
-
-    it('should render restrictions tab with expired restrictions for global prisoner contacts', async () => {
-      // Given
-      restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
-        contactGlobalRestrictions: [],
-        prisonerContactRestrictions: [],
-      })
-      // When
-      const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-restrictions`,
-      )
-
-      // Then
-      const $ = cheerio.load(response.text)
     })
 
     it('should render restrictions tab with no restrictions message', async () => {
