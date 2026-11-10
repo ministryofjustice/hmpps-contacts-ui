@@ -51,10 +51,9 @@ context('Manage contacts restrictions', () => {
     Page.verifyOnPage(ListContactsPage, 'John Smith').clickContactNamesLink('Davis, Daniel M.')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Daniel M. Davis')
-      .clickRestrictionsTab('3')
+      .clickRestrictionsTab('2')
       .checkPrisonerContactRestrictionsCardTitle()
       .checkGlobalRestrictionsCardTitle()
-      .checkGlobalPrisonerRestrictionsCardTitle()
   })
 
   it(`should add prisoner contact restrictions will take to add a new prisoner contact restriction page `, () => {
@@ -73,7 +72,7 @@ context('Manage contacts restrictions', () => {
     Page.verifyOnPage(ListContactsPage, 'John Smith').clickContactNamesLink('Davis, Daniel M.')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Daniel M. Davis') //
-      .clickRestrictionsTab('3')
+      .clickRestrictionsTab('2')
       .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'Daniel M. Davis', true)
       .clickButton('Add another relationship restriction')
 
@@ -95,7 +94,7 @@ context('Manage contacts restrictions', () => {
     Page.verifyOnPage(ListContactsPage, 'John Smith').clickContactNamesLink('Davis, Daniel M.')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Daniel M. Davis') //
-      .clickRestrictionsTab('3')
+      .clickRestrictionsTab('2')
       .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'Daniel M. Davis', true)
       .clickButton('Add another global restriction')
 

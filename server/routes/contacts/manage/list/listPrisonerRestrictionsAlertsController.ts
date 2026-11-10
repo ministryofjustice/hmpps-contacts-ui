@@ -6,6 +6,7 @@ import ContactsService from '../../../../services/contactsService'
 import AlertsService from '../../../../services/alertsService'
 import { PageAlert } from '../../../../data/alertsApiTypes'
 import { Navigation } from '../../common/navigation'
+import { isPrisonerRestrictionsMaintenanceEnabled } from '../../../prisoner-restrictions/prisonerRestrictionCommon'
 
 export default class ListPrisonerRestrictionsAlertsController implements PageHandler {
   constructor(
@@ -41,6 +42,7 @@ export default class ListPrisonerRestrictionsAlertsController implements PageHan
       alertForPrisoner,
       navigation,
       prisonerProfileUrl,
+      prisonerRestrictionsMaintenanceEnabled: isPrisonerRestrictionsMaintenanceEnabled(req.session?.activeCaseLoadId),
     }
 
     res.render('pages/contacts/restrictions/reviewRestrictions', viewModel)

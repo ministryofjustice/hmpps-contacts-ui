@@ -74,8 +74,6 @@ describe('listPrisonerRestrictionsAlertsController', () => {
       expect($('[data-qa="prisoner-restrictions-175317-entered-by-value"]').text()).toContain('Prabash Balasuriya')
 
       expect($('[data-qa="prisoner-alerts-heading"]').text()).toContain('John Smith’s alerts')
-      expect($('[data-qa=restrictions-warning]').text().trim()).toHaveLength(0)
-      expect($('[data-qa=restrictions-warning]').text().trim()).toHaveLength(0)
       expect($('[data-qa="prisoner-alerts-1-comments-value"]').text()).toContain(
         'gzmONOQRHANxDCBhAmycaZSDIfUTkIlYdGXcdhtVJLBgzmONOQRHANxDCBhAmycaZSDIfUTkIlYdGXcdhtVJL',
       )

@@ -25,6 +25,7 @@ generic-service:
     COMMON_COMPONENTS_ENABLED: true
     ENVIRONMENT_NAME: dev
     AUDIT_ENABLED: 'true'
+    PRISONER_RESTRICTIONS_MAINTENANCE_ENABLED_PRISONS: 'HEI,RSI'
 
   allowlist:
     groups:
