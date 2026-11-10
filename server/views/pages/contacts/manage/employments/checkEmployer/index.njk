@@ -22,14 +22,6 @@
         <h1 class="govuk-heading-l">Check and confirm if this is the correct employer for {{ contactNames | formatNameFirstNameFirst }}</h1>
       </div>
 
-      <p>
-        If this is the correct organisation record but the information needs to be updated, you can make changes on NOMIS after linking the employer to the contact.
-      </p>
-      {{ govukDetails({
-        summaryText: "How to update an organisation record in NOMIS",
-        html: '<ol class="govuk-list govuk-list--number"><li>Log into NOMIS.</li><li>Search for the organisation using the ‘Maintain external agencies’ page. (You might need to ask your LSA for access.)</li><li>Enter and save your updates. The changes will sync back into DPS automatically.</li></ol>'
-      }) }}
-
       {{ govukSummaryList({
         card: {
           title: {
