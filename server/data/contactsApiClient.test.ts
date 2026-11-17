@@ -51,6 +51,10 @@ describe('contactsApiClient', () => {
     nock.cleanAll()
   })
 
+  afterAll(() => {
+    nock.restore()
+  })
+
   describe('createContact', () => {
     it('should create the request and return the response', async () => {
       // Given
