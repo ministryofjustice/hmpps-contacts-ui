@@ -10,7 +10,6 @@ import logAccessibilityViolations from './integration_tests/support/accessibilit
 import organisationsApi from './integration_tests/mockApis/organisationsApi'
 
 export default defineConfig({
-  allowCypressEnv: false,
   chromeWebSecurity: false,
   fixturesFolder: 'integration_tests/fixtures',
   screenshotsFolder: 'integration_tests/screenshots',
