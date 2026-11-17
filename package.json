@@ -15,8 +15,8 @@
     "lint": "eslint . --cache --max-warnings 0 --no-warn-ignored",
     "lint-fix": "eslint . --cache --max-warnings 0 --fix --no-warn-ignored",
     "typecheck": "tsc && tsc -p integration_tests",
-    "test": "jest",
-    "test:ci": "jest --runInBand",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
+    "test:ci": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
     "security_audit": "npx audit-ci --config audit-ci.json",
     "int-test": "cypress run --config video=false",
     "int-test-ui": "cypress open --e2e",
@@ -87,7 +87,7 @@
     "audit-ci": "^7.1.0",
     "axe-core": "^4.14.0",
     "cheerio": "^1.2.0",
-    "cypress": "^15.21.1",
+    "cypress": "^16.2.1",
     "cypress-axe": "^1.7.0",
     "cypress-multi-reporters": "^2.1.0",
     "del": "9.0.1",
@@ -102,7 +102,7 @@
     "jsonwebtoken": "^9.0.3",
     "lint-staged": "^17.6.0",
     "mocha-junit-reporter": "^2.2.1",
-    "nock": "^14.0.17",
+    "nock": "^15.0.5",
     "nodemon": "^3.1.14",
     "prettier": "^3.9.10",
     "supertest": "^7.3.2",
@@ -114,6 +114,9 @@
     "@opentelemetry/core": "2.12.0",
     "@opentelemetry/resources": "2.12.0",
     "brace-expansion": "5.0.12",
+    "cypress-axe": {
+      "cypress": "$cypress"
+    },
     "handlebars": "4.7.10",
     "mocha": {
       "diff": "^8.0.4",
@@ -123,7 +126,7 @@
   },
   "allowScripts": {
     "@parcel/watcher@2.6.0": true,
-    "cypress@15.21.1": true,
+    "cypress@16.2.1": true,
     "dtrace-provider@0.8.8": false,
     "esbuild@0.28.2": true,
     "fsevents@2.3.3": false,
