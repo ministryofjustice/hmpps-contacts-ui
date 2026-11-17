@@ -28,6 +28,10 @@ describe('Alerts api client tests', () => {
     nock.cleanAll()
   })
 
+  afterAll(() => {
+    nock.restore()
+  })
+
   it('Get alerts for a prisoner', async () => {
     const alert = pagedPrisonerAlertsData()
 

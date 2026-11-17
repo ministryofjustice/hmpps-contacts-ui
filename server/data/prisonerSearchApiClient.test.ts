@@ -29,6 +29,10 @@ describe('Prisoner search', () => {
     nock.cleanAll()
   })
 
+  afterAll(() => {
+    nock.restore()
+  })
+
   describe('getByPrisonerNumber', () => {
     it('should return a single prisoner by prisoner number', async () => {
       const prisoner = TestData.prisoner()
