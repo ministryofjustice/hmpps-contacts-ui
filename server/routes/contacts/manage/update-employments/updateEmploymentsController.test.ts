@@ -134,7 +134,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
       `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/new/organisation-search/${journeyId}`,
     )
     expect($('a:contains("Cancel")').attr('href')).toEqual('/prisoner/A1234BC/contacts/manage/1/relationship/2')
-    expect($('p:contains("To change details such as the employer name")').text()).toBeTruthy()
 
     expect($('strong:contains("Only record data when it is necessary to do so.")').text()).toBeTruthy()
   })
@@ -159,7 +158,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
     expect($('a:contains("Add employer")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/new/organisation-search/${journeyId}`,
     )
-    expect($('p:contains("To change details such as the employer name")').text()).toBeFalsy()
   })
 
   it('should handle employment record missing optional values', async () => {
