@@ -105,6 +105,7 @@ import { deleteRelationshipSchema } from './relationship/delete-relationship/del
 import ManageContactDeleteDobController from './date-of-birth/delete/manageContactDeleteDobController'
 import ListPrisonerRestrictionsAlertsController from './list/listPrisonerRestrictionsAlertsController'
 import { PrisonerJourneyParams } from '../../../@types/journeys'
+import { restrictionsPageRoleCheck } from '../../prisoner-restrictions/prisonerRestrictionCommon'
 import ContactAuditHistoryService from '../../../services/contactAuditHistoryService'
 
 const ManageContactsRoutes = (
@@ -202,6 +203,7 @@ const ManageContactsRoutes = (
   get(
     '/prisoner/:prisonerNumber/alerts-restrictions',
     new ListPrisonerRestrictionsAlertsController(contactsService, alertsService),
+    restrictionsPageRoleCheck,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
   )
 

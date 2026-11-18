@@ -1,6 +1,5 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/restrictionsTable.njk" import restrictionsTable %}
-{% from "partials/restrictionsReviewTable.njk" import restrictionsReviewTable %}
 
 {% extends "partials/layout.njk" %}§
 
@@ -58,15 +57,6 @@
         attributes: {"data-qa": "add-global-restriction-button"},
         preventDoubleClick: true
       }) }}
-      </div>
-      <div>
-        {{ restrictionsReviewTable({
-          restrictionClass: 'prisoner-restrictions',
-          restrictions: prisonerRestrictions,
-          prisonerDetails: prisonerDetails,
-          hideTableTitle: false,
-          hideWarning: false
-        }) }}
       </div>
       <div class="govuk-button-group">
         {% if navigation.cancelButton %}

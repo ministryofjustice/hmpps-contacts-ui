@@ -582,4 +582,40 @@ describe('restrictionsService', () => {
       })
     })
   })
+
+  describe('prisoner restriction audit events', () => {
+    const form = { type: 'BAN', startDate: '02/03/2030', expiryDate: '', comments: 'c' } as RestrictionSchemaType
+    const expected = { who: 'user1', correlationId: 'corr-1', subjectType: 'PRISONER_RESTRICTION' }
+
+    it.each([
+      ['create', () => service.createPrisonerRestriction('A1234BC', form, user, 'corr-1'), 'POST', 'A1234BC'],
+      ['update', () => service.updatePrisonerRestriction('A1234BC', 7, form, user, 'corr-1'), 'PUT', '7'],
+      ['close', () => service.closePrisonerRestriction('A1234BC', 7, '2030-01-01', user, 'corr-1'), 'POST_CLOSE', '7'],
+    ])('audits a successful %s', async (_, act, method, subjectId) => {
+      apiClient.createPrisonerRestriction.mockResolvedValue({} as never)
+      apiClient.updatePrisonerRestriction.mockResolvedValue({} as never)
+      apiClient.closePrisonerRestriction.mockResolvedValue({} as never)
+
+      await act()
+
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith(
+        expect.objectContaining({ ...expected, what: `API_${method}_PRISONER_RESTRICTION`, subjectId }),
+      )
+    })
+
+    it('audits a failed close with the status code and rethrows', async () => {
+      apiClient.closePrisonerRestriction.mockRejectedValue({ responseStatus: 404 })
+
+      await expect(service.closePrisonerRestriction('A1234BC', 7, '2030-01-01', user, 'corr-1')).rejects.toEqual({
+        responseStatus: 404,
+      })
+
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          what: 'FAILURE_API_POST_CLOSE_PRISONER_RESTRICTION',
+          details: expect.objectContaining({ statusCode: 404 }),
+        }),
+      )
+    })
+  })
 })

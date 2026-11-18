@@ -27,16 +27,7 @@ export default class EditRestrictionsController implements PageHandler {
     const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
     const { prisonerContactRestrictions, contactGlobalRestrictions } =
       await this.restrictionsService.getRelationshipAndGlobalRestrictions(Number(prisonerContactId), user)
-    const prisonerRestrictionsContent = await this.contactsService.getPrisonerRestrictions(
-      prisonerNumber,
-      0,
-      10,
-      user,
-      false,
-      false,
-    )
 
-    const prisonerRestrictions = prisonerRestrictionsContent.content
     const navigation: Navigation = {
       backLinkLabel: 'Back to contact record',
       backLink: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
@@ -51,7 +42,6 @@ export default class EditRestrictionsController implements PageHandler {
       contactId,
       prisonerContactId,
       navigation,
-      prisonerRestrictions,
     })
   }
 }

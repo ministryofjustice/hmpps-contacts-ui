@@ -20,6 +20,8 @@
     "node_modules",
     "assets/**/*.js",
     "integration_tests",
+    "playwright_tests",
+    "playwright.config.ts",
     "dist",
     "cypress.config.ts",
     "esbuild",

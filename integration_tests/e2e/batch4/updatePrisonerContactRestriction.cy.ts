@@ -61,7 +61,7 @@ context('Update Prisoner Contact Restriction', () => {
     })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickRestrictionsTab('2')
+      .clickRestrictionsTab('1')
       .verifyOnRestrictionsTab()
       .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'First Middle Names Last', true)
       .clickLink('Change this Banned relationship restriction')
