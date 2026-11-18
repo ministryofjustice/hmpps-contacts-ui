@@ -26,6 +26,7 @@ generic-service:
     ENVIRONMENT_NAME: dev
     AUDIT_ENABLED: 'true'
     PRISONER_RESTRICTIONS_MAINTENANCE_ENABLED_PRISONS: 'HEI,RSI'
+    LOG_LEVEL: 'debug'
 
   allowlist:
     groups:
