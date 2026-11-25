@@ -32,6 +32,8 @@ jobs:
   node_unit_tests:
     name: node unit tests
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_unit_tests.yml@v2 # WORKFLOW_VERSION
+    with:
+      test-report-continue-on-error: true
     needs: [node_build]
     secrets: inherit
   node_integration_tests:
@@ -51,6 +53,7 @@ jobs:
       redis_tag: "7"
       npm_script: ${{ matrix.test_batch }}
       test_results_artifact_name: ${{ matrix.test_batch }}
+      test-report-continue-on-error: true
   helm_lint:
     strategy:
       matrix:
