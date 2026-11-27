@@ -94,7 +94,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Update a phone number for First Middle Last')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
     )
     expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
@@ -181,7 +181,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '000' })
       .expect(302)
-      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods')
 
     expect(contactsService.updateContactPhone).toHaveBeenCalledWith(
       contactId,
@@ -206,7 +206,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '' })
       .expect(302)
-      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods')
 
     expect(contactsService.updateContactPhone).toHaveBeenCalledWith(
       contactId,

@@ -34,7 +34,7 @@ export default class ChangeAddressTypeController implements PageHandler {
 
     const navigation: Navigation = {
       backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
-      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
       isEdit: true,
@@ -79,6 +79,6 @@ export default class ChangeAddressTypeController implements PageHandler {
           `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}`,
         ),
       )
-    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+    res.redirect(Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId))
   }
 }

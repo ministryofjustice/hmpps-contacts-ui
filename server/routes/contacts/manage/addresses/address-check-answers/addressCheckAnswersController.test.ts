@@ -267,7 +267,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', `/prisoner/A1234BC/contacts/manage/123456/relationship/456789`)
+      .expect('Location', `/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods`)
 
     // Then
     expect(session.addressJourneys![journeyId]).toBeUndefined()

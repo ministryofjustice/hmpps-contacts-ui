@@ -89,7 +89,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Add phone numbers for First Middle Last')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
     )
     expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
@@ -161,7 +161,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .send('phones[1][type]=HOME')
       .send('phones[1][phoneNumber]=987654321')
       .expect(302)
-      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods')
 
     expect(contactsService.createContactPhones).toHaveBeenCalledWith(
       contactId,

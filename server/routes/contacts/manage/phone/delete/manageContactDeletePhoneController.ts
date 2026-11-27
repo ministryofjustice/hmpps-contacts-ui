@@ -35,7 +35,7 @@ export default class ManageContactDeletePhoneController implements PageHandler {
     }
     const navigation: Navigation = {
       backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
-      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
     }
     res.render('pages/contacts/manage/contactMethods/confirmDeletePhone', { contact, phone, navigation })
   }
@@ -58,6 +58,6 @@ export default class ManageContactDeletePhoneController implements PageHandler {
           `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}`,
         ),
       )
-    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+    res.redirect(Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId))
   }
 }

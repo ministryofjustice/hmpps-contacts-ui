@@ -117,7 +117,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/123456/relationship/456789',
+      '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods',
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
@@ -201,7 +201,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .type('form')
       .send({ noFixedAddress, flat, street, countryCode })
       .expect(302)
-      .expect('Location', '/prisoner/A1234BC/contacts/manage/123456/relationship/456789')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods')
 
     // Then
     const expected: Parameters<typeof contactsService.updateContactAddress>[0] = {
