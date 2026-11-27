@@ -78,7 +78,7 @@ context('Create Email Addresses', () => {
       .clickRemoveButton(1)
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason').hasSuccessBanner(
       'You’ve updated the contact methods for Jones Mason',
     )
     cy.verifyLastAPICall(
@@ -149,7 +149,7 @@ context('Create Email Addresses', () => {
       .backTo(ManageContactDetailsPage, 'Jones Mason')
   })
 
-  it('Cancel goes to manage contacts', () => {
+  it('Cancel goes to edit contact methods', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickContactMethodsTab()
       .clickEditContactMethodsLink()
@@ -158,6 +158,6 @@ context('Create Email Addresses', () => {
       .clickAddEmailLink()
 
     Page.verifyOnPage(AddEmailsPage, 'Jones Mason') //
-      .cancelTo(ManageContactDetailsPage, 'Jones Mason')
+      .cancelTo(EditContactMethodsPage, 'Jones Mason')
   })
 })

@@ -72,7 +72,7 @@ context('Create Contact Phones', () => {
       .enterPhoneNumber(2, '01234 777776')
       .selectType(2, 'HOME')
       .clickRemoveButton(1)
-      .clickButtonTo('Confirm and save', ManageContactDetailsPage, 'First Middle Names Last')
+      .clickButtonTo('Confirm and save', EditContactMethodsPage, 'First Middle Names Last')
       .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last')
 
     cy.verifyLastAPICall(
@@ -145,6 +145,6 @@ context('Create Contact Phones', () => {
 
     // Cancel to Contact Details page
     Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last') //
-      .clickLinkTo('Cancel', ManageContactDetailsPage, 'First Middle Names Last')
+      .clickLinkTo('Cancel', EditContactMethodsPage, 'First Middle Names Last')
   })
 })
