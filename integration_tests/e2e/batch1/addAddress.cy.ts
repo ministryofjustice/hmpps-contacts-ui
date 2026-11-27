@@ -456,6 +456,6 @@ context('Add Address', () => {
     Page.verifyOnPage(CancelAddAddressPage, 'First Middle Names Last')
       .clickButtonTo('No, return to check answers', AddressCheckYourAnswersPage, 'First Middle Names Last') //
       .clickLinkTo('Cancel', CancelAddAddressPage, 'First Middle Names Last')
-      .clickButtonTo('Yes, cancel', ManageContactDetailsPage, 'First Middle Names Last')
+      .clickButtonTo('Yes, cancel', EditContactMethodsPage, 'First Middle Names Last')
   })
 })

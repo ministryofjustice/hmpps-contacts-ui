@@ -39,7 +39,7 @@ export default class CancelAddAddressController implements PageHandler {
     const { action } = req.body
     if (action === 'YES') {
       delete req.session.addressJourneys![journeyId]
-      res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+      res.redirect(Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId))
     } else {
       res.redirect(addressUrl({ subPath: 'check-answers' }))
     }
