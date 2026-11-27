@@ -32,7 +32,7 @@ export default class ManageContactAddAddressPhoneController implements PageHandl
     const typeOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
     const navigation: Navigation = {
       backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
-      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
       isEdit: true,
@@ -71,7 +71,7 @@ export default class ManageContactAddAddressPhoneController implements PageHandl
             `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}`,
           ),
         )
-      res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+      res.redirect(Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId))
     } else {
       if (add !== undefined) {
         phones.push({ type: '', phoneNumber: '', extension: '' })

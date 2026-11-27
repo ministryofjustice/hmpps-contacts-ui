@@ -86,7 +86,7 @@ context('Edit Contact Phones', () => {
       .clearExtension()
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last').hasSuccessBanner(
       'You’ve updated the contact methods for First Middle Names Last',
     )
 
@@ -133,7 +133,7 @@ context('Edit Contact Phones', () => {
       .selectType('MOB')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last').hasSuccessBanner(
       'You’ve updated the contact methods for First Middle Names Last',
     )
 
@@ -208,7 +208,7 @@ context('Edit Contact Phones', () => {
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
-  it('Cancel goes to manage contact', () => {
+  it('Cancel goes to edit contact methods', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickContactMethodsTab()
       .clickEditContactMethodsLink()
@@ -217,6 +217,6 @@ context('Edit Contact Phones', () => {
       .clickEditPhoneNumberLink('01111 777777')
 
     Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
-      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
   })
 })

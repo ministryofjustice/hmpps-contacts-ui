@@ -120,7 +120,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       'Are you sure you want to delete a phone number for this address?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
     )
     expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
@@ -154,7 +154,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       'Are you sure you want to delete a phone number for this address?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
@@ -202,7 +202,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/123/delete`,
       )
       .expect(302)
-      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods')
 
     // Then
     expect(contactsService.deleteContactAddressPhone).toHaveBeenCalledWith(

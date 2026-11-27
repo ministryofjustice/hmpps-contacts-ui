@@ -69,7 +69,7 @@ context('Edit Email Address', () => {
       .enterEmail('mr.last@example.com')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason').hasSuccessBanner(
       'You’ve updated the contact methods for Jones Mason',
     )
 
@@ -98,7 +98,7 @@ context('Edit Email Address', () => {
 
     Page.verifyOnPage(EditEmailPage, 'Jones Mason').hasEmail('last@example.com').clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason').hasSuccessBanner(
       'You’ve updated the contact methods for Jones Mason',
     )
 
@@ -188,7 +188,7 @@ context('Edit Email Address', () => {
       .backTo(ManageContactDetailsPage, 'Jones Mason')
   })
 
-  it('Cancel goes to manage contacts', () => {
+  it('Cancel goes to edit contact methods', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickContactMethodsTab()
       .clickEditContactMethodsLink()
@@ -197,6 +197,6 @@ context('Edit Email Address', () => {
       .clickEditEmailLink('last@example.com')
 
     Page.verifyOnPage(EditEmailPage, 'Jones Mason') //
-      .cancelTo(ManageContactDetailsPage, 'Jones Mason')
+      .cancelTo(EditContactMethodsPage, 'Jones Mason')
   })
 })

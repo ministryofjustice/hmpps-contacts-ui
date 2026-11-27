@@ -120,7 +120,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/123456/relationship/456789',
+      '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods',
     )
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(
       /<strong>Address:<\/strong><br>\n\s+?1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Exeter<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
@@ -186,7 +186,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .type('form')
       .send({ comments })
       .expect(302)
-      .expect('Location', '/prisoner/A1234BC/contacts/manage/123456/relationship/456789')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods')
 
     // Then
     const expected = {
@@ -214,7 +214,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .type('form')
       .send({ comments })
       .expect(302)
-      .expect('Location', '/prisoner/A1234BC/contacts/manage/123456/relationship/456789')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods')
 
     // Then
     const expected: Parameters<typeof contactsService.updateContactAddress>[0] = {
@@ -242,7 +242,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .type('form')
       .send({ comments })
       .expect(302)
-      .expect('Location', '/prisoner/A1234BC/contacts/manage/123456/relationship/456789')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods')
 
     // Then
     const expected = {

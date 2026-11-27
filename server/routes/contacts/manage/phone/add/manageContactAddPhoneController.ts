@@ -29,7 +29,7 @@ export default class ManageContactAddPhoneController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const navigation: Navigation = {
       backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
-      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
       contact: await this.contactsService.getContactName(parseInt(contactId, 10), user),
@@ -68,7 +68,7 @@ export default class ManageContactAddPhoneController implements PageHandler {
             `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}`,
           ),
         )
-      res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+      res.redirect(Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId))
     } else {
       if (add !== undefined) {
         phones.push({ type: '', phoneNumber: '', extension: '' })

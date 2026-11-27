@@ -46,7 +46,7 @@ export default class ManageContactEditAddressPhoneController implements PageHand
     }
     const navigation: Navigation = {
       backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
-      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
       typeOptions: await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
@@ -95,6 +95,6 @@ export default class ManageContactEditAddressPhoneController implements PageHand
           `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}`,
         ),
       )
-    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+    res.redirect(Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId))
   }
 }

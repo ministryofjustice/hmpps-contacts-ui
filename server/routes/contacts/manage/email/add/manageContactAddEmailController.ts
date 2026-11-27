@@ -33,7 +33,7 @@ export default class ManageContactAddEmailController implements PageHandler {
 
     const navigation: Navigation = {
       backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
-      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
     }
 
     const viewModel = {
@@ -65,7 +65,7 @@ export default class ManageContactAddEmailController implements PageHandler {
             `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}`,
           ),
         )
-      res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+      res.redirect(Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId))
     } else {
       if (typeof add !== 'undefined') {
         emails.push({ emailAddress: '' })
