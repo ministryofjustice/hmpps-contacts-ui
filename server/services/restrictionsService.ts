@@ -10,6 +10,7 @@ import {
   CreateContactRestrictionRequest,
   CreatePrisonerContactRestrictionRequest,
   PrisonerContactRestrictionDetails,
+  PrisonerRestrictionDetails,
   PrisonerContactRestrictionsResponse,
   UpdateContactRestrictionRequest,
   UpdatePrisonerContactRestrictionRequest,
@@ -156,5 +157,88 @@ export default class RestrictionsService extends AuditedService {
     user: Express.User,
   ): Promise<PrisonerContactRestrictionsResponse> {
     return this.contactsApiClient.getPrisonerContactRestrictions(prisonerContactId, user.username)
+  }
+
+  private toPrisonerRestrictionRequest(form: RestrictionSchemaType) {
+    const { type, startDate, expiryDate, comments } = form
+    const parsedStartDate = formatISO(parse(startDate, 'dd/MM/yyyy', new Date()), { representation: 'date' })
+    const parsedExpiryDate = expiryDate
+      ? formatISO(parse(expiryDate, 'dd/MM/yyyy', new Date()), { representation: 'date' })
+      : undefined
+    return {
+      request: {
+        restrictionType: type,
+        effectiveDate: parsedStartDate,
+        ...(parsedExpiryDate ? { expiryDate: parsedExpiryDate } : {}),
+        ...(comments ? { commentText: comments } : {}),
+      },
+      details: { type, startDate: parsedStartDate, expiryDate: parsedExpiryDate ?? null },
+    }
+  }
+
+  async createPrisonerRestriction(
+    prisonerNumber: string,
+    form: RestrictionSchemaType,
+    user: Express.User,
+    correlationId: string,
+  ): Promise<PrisonerRestrictionDetails> {
+    const { request, details } = this.toPrisonerRestrictionRequest(form)
+    return this.handleAuditEvent(
+      this.contactsApiClient.createPrisonerRestriction(prisonerNumber, request, user.username),
+      {
+        what: 'API_POST_PRISONER_RESTRICTION',
+        who: user.username,
+        subjectType: 'PRISONER_RESTRICTION',
+        subjectId: prisonerNumber,
+        details,
+        correlationId,
+      },
+    )
+  }
+
+  async updatePrisonerRestriction(
+    prisonerNumber: string,
+    prisonerRestrictionId: number,
+    form: RestrictionSchemaType,
+    user: Express.User,
+    correlationId: string,
+  ): Promise<PrisonerRestrictionDetails> {
+    const { request, details } = this.toPrisonerRestrictionRequest(form)
+    return this.handleAuditEvent(
+      this.contactsApiClient.updatePrisonerRestriction(prisonerNumber, prisonerRestrictionId, request, user.username),
+      {
+        what: 'API_PUT_PRISONER_RESTRICTION',
+        who: user.username,
+        subjectType: 'PRISONER_RESTRICTION',
+        subjectId: String(prisonerRestrictionId),
+        details: { prisonerNumber, ...details },
+        correlationId,
+      },
+    )
+  }
+
+  async closePrisonerRestriction(
+    prisonerNumber: string,
+    prisonerRestrictionId: number,
+    expiryDate: string,
+    user: Express.User,
+    correlationId: string,
+  ): Promise<PrisonerRestrictionDetails> {
+    return this.handleAuditEvent(
+      this.contactsApiClient.closePrisonerRestriction(
+        prisonerNumber,
+        prisonerRestrictionId,
+        { expiryDate },
+        user.username,
+      ),
+      {
+        what: 'API_POST_CLOSE_PRISONER_RESTRICTION',
+        who: user.username,
+        subjectType: 'PRISONER_RESTRICTION',
+        subjectId: String(prisonerRestrictionId),
+        details: { prisonerNumber, expiryDate },
+        correlationId,
+      },
+    )
   }
 }

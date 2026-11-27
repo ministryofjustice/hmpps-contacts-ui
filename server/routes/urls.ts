@@ -30,4 +30,20 @@ export default class Urls {
   ) => {
     return `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-restrictions`
   }
+
+  static prisonerRestrictions = (prisonerNumber: string) => {
+    return `/prisoner/${prisonerNumber}/alerts-restrictions`
+  }
+
+  static addPrisonerRestriction = (prisonerNumber: string) => {
+    return `/prisoner/${prisonerNumber}/restrictions/add`
+  }
+
+  static updatePrisonerRestriction = (prisonerNumber: string, prisonerRestrictionId: string | number) => {
+    return `/prisoner/${prisonerNumber}/restrictions/${prisonerRestrictionId}/update`
+  }
+
+  static closePrisonerRestriction = (prisonerNumber: string, prisonerRestrictionId: string | number) => {
+    return `/prisoner/${prisonerNumber}/restrictions/${prisonerRestrictionId}/close`
+  }
 }

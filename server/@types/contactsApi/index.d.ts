@@ -7690,6 +7690,53 @@ export interface components {
       content?: components['schemas']['PrisonerRestrictionDetails'][]
       page?: components['schemas']['PageMetadata']
     }
+    /** @description Request to create a new restriction on a prisoner */
+    CreatePrisonerRestrictionRequest: {
+      /** @description Restriction type code (reference group RESTRICTION) */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Restriction effective date
+       * @example 2024-01-01
+       */
+      effectiveDate: string
+      /**
+       * Format: date
+       * @description Restriction expiry date
+       * @example 2024-12-31
+       */
+      expiryDate?: string
+      /** @description Comments for the restriction */
+      commentText?: string
+    }
+    /** @description Request to update an existing restriction on a prisoner */
+    UpdatePrisonerRestrictionRequest: {
+      /** @description Restriction type code (reference group RESTRICTION) */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Restriction effective date
+       * @example 2024-01-01
+       */
+      effectiveDate: string
+      /**
+       * Format: date
+       * @description Restriction expiry date
+       * @example 2024-12-31
+       */
+      expiryDate?: string
+      /** @description Comments for the restriction */
+      commentText?: string
+    }
+    /** @description Request to close a prisoner restriction by setting its expiry date */
+    ClosePrisonerRestrictionRequest: {
+      /**
+       * Format: date
+       * @description The date the restriction expires. Must not be in the past, or before the effective date.
+       * @example 2024-12-31
+       */
+      expiryDate: string
+    }
     /** @description Prisoner restriction details response */
     PrisonerRestrictionDetails: {
       /**
